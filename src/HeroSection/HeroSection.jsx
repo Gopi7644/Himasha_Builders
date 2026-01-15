@@ -1,17 +1,25 @@
-import React from "react";
+import heroImg from "../assets/hero.webp";
 import "./hero.css";
 
 const HeroSection = () => {
   return (
-    <section className="hero" aria-label="Interior design hero section">
+    <section
+      className="hero"
+      style={{ backgroundImage: `url(${heroImg})` }}
+      aria-label="Luxury interior design hero section"
+    >
       <div className="hero-overlay"></div>
 
       <div className="hero-content">
-        <h1>Dream Homes, Expertly Revamped</h1>
+        <h1>Luxury Interior Design for Modern Living</h1>
         <p>
-          Dwell Craft transforms spaces with bespoke interior design,
-          delivering comfort, elegance, and functionality.
+          We create elegant, functional, and timeless interiors that reflect
+          your lifestyle and elevate your living experience.
         </p>
+
+        <a href="#contact" className="hero-btn">
+          Book Free Consultation
+        </a>
       </div>
     </section>
   );
