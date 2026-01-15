@@ -7,20 +7,21 @@ const TopBar = () => {
         
         {/* Phone */}
         <a
-          href="tel:+919718160984"
+          href="tel:+917739905017"
           className="flex items-center gap-2 hover:text-black transition"
         >
           <Phone size={16} />
-          <span>+91 9718160984</span>
+          <span>+91 7903550309</span>
+          <span>+91 7739905017</span>
         </a>
 
         {/* Email */}
         <a
-          href="mailto:info.dwellcraft@gmail.com"
+          href="mailto:info.himashabuilders@gmail.com"
           className="flex items-center gap-2 hover:text-black transition"
         >
           <Mail size={16} />
-          <span>info.dwellcraft@gmail.com</span>
+          <span>info.himashabuilders@gmail.com</span>
         </a>
 
       </div>

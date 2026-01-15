@@ -302,7 +302,7 @@ const Header = () => {
                 onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
                 onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                Inquiry
+                Enquiry
               </NavLink>
 
               <NavLink 

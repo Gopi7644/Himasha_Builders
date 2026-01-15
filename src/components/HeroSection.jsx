@@ -5,11 +5,11 @@ import "../styles/hero.css";
 const HeroSection = () => {
   return (
     <section
-      className="hero"
+      className="hero hero-light"
       style={{ backgroundImage: `url(${heroBg})` }}
       aria-label="Interior Designing Hero Section"
     >
-      <div className="hero-overlay"></div>
+      <div className="hero-overlay-light"></div>
 
       <div className="hero-inner">
         {/* LEFT CONTENT */}
