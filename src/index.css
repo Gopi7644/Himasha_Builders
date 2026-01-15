@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@keyframes borderTop {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes borderBottom {
+  0% { left: 100%; }
+  100% { left: -100%; }
+}
+
+@keyframes borderLeft {
+  0% { top: -100%; }
+  100% { top: 100%; }
+}
+
+@keyframes borderRight {
+  0% { top: 100%; }
+  100% { top: -100%; }
+}
