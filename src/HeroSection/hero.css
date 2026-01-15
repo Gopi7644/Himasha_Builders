@@ -1,0 +1,31 @@
+.hero {
+  position: relative;
+  min-height: 85vh;
+  background: url("/hero-interior.jpg") center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+}
+
+.hero-content {
+  position: relative;
+  max-width: 600px;
+  color: #fff;
+}
+
+.hero-content h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+}
+
+.hero-content p {
+  margin-top: 1rem;
+  font-size: 18px;
+  line-height: 1.6;
+}
