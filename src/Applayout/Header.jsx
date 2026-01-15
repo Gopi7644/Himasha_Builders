@@ -259,7 +259,7 @@ const Header = () => {
             </svg>
             <div>
               <div style={brandStyle}>Himasha Builders</div>
-              <div style={tagStyle}>Interiors & Design</div>
+              <div style={tagStyle}>Interior Design & Construction Pvt. Ltd.</div>
             </div>
           </NavLink>
 
