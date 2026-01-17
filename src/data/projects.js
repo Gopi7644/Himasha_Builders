@@ -1,15 +1,25 @@
-// example – आप इसी pattern से बाकी images add करें
+import { loadImages } from '../utils/loadImages'
 
-import f1 from '../assets/projects/flats/1.jpg'
-import f2 from '../assets/projects/flats/2.jpg'
+// Vite magic ✨
+const flatsImages = import.meta.glob('../assets/projects/flats/*.{jpg,jpeg,png}', {
+  eager: true,
+})
 
-import i1 from '../assets/projects/interior/1.jpg'
-import i2 from '../assets/projects/interior/2.jpg'
+const interiorImages = import.meta.glob('../assets/projects/interior/*.{jpg,jpeg,png}', {
+  eager: true,
+})
+
+const marriageImages = import.meta.glob('../assets/projects/marriage-hall/*.{jpg,jpeg,png}', {
+  eager: true,
+})
+
+const shopImages = import.meta.glob('../assets/projects/shop/*.{jpg,jpeg,png}', {
+  eager: true,
+})
 
 export const PROJECTS = {
-  flats: [f1, f2, ...97],
-  interior: [i1, i2, ...155],
-  marriage: [m1, m2, ...155],
-  shop: [s1, s2, ...155],
-  shop: [/* 15 images */],
+  flats: loadImages(flatsImages),
+  interior: loadImages(interiorImages),
+  marriage: loadImages(marriageImages),
+  shop: loadImages(shopImages),
 }

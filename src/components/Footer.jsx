@@ -83,7 +83,7 @@ const Footer = () => {
             </a>
           </p>
 
-          <p>📍RK Puram Near GD Goenka School,<br /> <span className='ml-6'>Danapur, Patna</span></p>
+          <p>📍RK Puram Near Peepal Tree Chowk,<br /> <span className='ml-6'>Danapur, Patna</span></p>
         </div>
       </div>
 
