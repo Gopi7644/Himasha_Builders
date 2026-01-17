@@ -3,7 +3,7 @@ import "../styles/form.css";
 const FloatingForm = () => {
   return (
     <div className="form-card fade-in">
-      <h3>Get one's Free Site Visit</h3>
+      <h3>Get Your Free Site Visit</h3>
 
       <form>
         <input type="text" placeholder="Name" required />

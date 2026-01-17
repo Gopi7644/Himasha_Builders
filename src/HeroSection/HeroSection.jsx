@@ -1,6 +1,5 @@
 import heroImg from "../assets/hero.webp";
 import "./hero.css";
-import contact from "../Page/contact.jsx";
 
 const HeroSection = () => {
   return (
