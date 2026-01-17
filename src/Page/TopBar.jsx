@@ -1,4 +1,5 @@
 import { Phone, Mail } from "lucide-react";
+import { BsWhatsapp } from "react-icons/bs";
 
 const TopBar = () => {
   return (
@@ -8,11 +9,17 @@ const TopBar = () => {
         {/* Phone */}
         <a
           href="tel:+917739905017"
-          className="flex items-center gap-2 hover:text-black transition"
+          className="flex items-center gap-2 hover:text-orange-400 transition"
+        >
+          <BsWhatsapp size={16} />
+          <span>+91 7739905017</span>
+        </a>
+        <a
+          href="tel:+917903550309"
+          className="flex items-center gap-2 hover:text-orange-400 transition"
         >
           <Phone size={16} />
           <span>+91 7903550309</span>
-          <span>+91 7739905017</span>
         </a>
 
         {/* Email */}
@@ -21,7 +28,7 @@ const TopBar = () => {
           className="flex items-center gap-2 hover:text-black transition"
         >
           <Mail size={16} />
-          <span>info.himashabuilders@gmail.com</span>
+          <span>info@himashabuilders.com</span>
         </a>
 
       </div>
