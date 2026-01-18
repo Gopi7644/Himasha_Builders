@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Services from './Services'
-import ProjectGallery from './ProjectGallery'
+import ProjectGallery from './ProjectGallary'
 
 const ProjectsPage = () => {
   const [active, setActive] = useState('interior')
