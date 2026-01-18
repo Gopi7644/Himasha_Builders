@@ -1,73 +1,150 @@
-const ImageModal = ({ images, index, setIndex }) => {
-  if (index === null) return null
+import { useEffect, useState } from "react";
+import { FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-  const close = () => setIndex(null)
-  const prev = () => index > 0 && setIndex(index - 1)
+const ImageModal = ({ images = [], index = 0, onClose }) => {
+  const [current, setCurrent] = useState(index);
+  const [touchStart, setTouchStart] = useState(null);
+
+  // 🔁 Sync index
+  useEffect(() => {
+    setCurrent(index);
+  }, [index]);
+
+  // ⌨️ Keyboard shortcuts
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  });
+
   const next = () =>
-    index < images.length - 1 && setIndex(index + 1)
+    setCurrent((c) => (c + 1) % images.length);
+  const prev = () =>
+    setCurrent((c) => (c - 1 + images.length) % images.length);
+
+  // 📱 Touch swipe handlers
+  const onTouchStart = (e) =>
+    setTouchStart(e.touches[0].clientX);
+
+  const onTouchEnd = (e) => {
+    if (!touchStart) return;
+    const diff = touchStart - e.changedTouches[0].clientX;
+    if (diff > 60) next();
+    if (diff < -60) prev();
+    setTouchStart(null);
+  };
+
+  if (!images.length) return null;
 
   return (
     <div
-      onClick={close}
       style={{
-        position: 'fixed',
+        position: "fixed",
         inset: 0,
-        background: 'rgba(0,0,0,0.85)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 999,
+        zIndex: 9999,
+        background: "rgba(0,0,0,0.88)",
+        backdropFilter: "blur(6px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1.5rem",
       }}
+      onClick={onClose}
     >
+      {/* Modal Container */}
       <div
-        onClick={(e) => e.stopPropagation()}
         style={{
-          position: 'relative',
-          maxWidth: '90%',
-          maxHeight: '85vh',
+          position: "relative",
+          maxWidth: "1100px",
+          width: "100%",
+          maxHeight: "90vh",
+          borderRadius: "18px",
+          overflow: "hidden",
+          background: "rgba(20,20,20,0.65)",
+          boxShadow: "0 30px 60px rgba(0,0,0,0.6)",
         }}
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
-        <img
-          src={images[index]}
-          alt="Project"
+        {/* Close Button */}
+        <button
+          onClick={onClose}
           style={{
-            width: '100%',
-            maxHeight: '85vh',
-            borderRadius: '14px',
-            objectFit: 'contain',
+            position: "absolute",
+            top: "16px",
+            right: "16px",
+            background: "rgba(0,0,0,0.6)",
+            border: "none",
+            color: "#fff",
+            padding: "0.6rem",
+            borderRadius: "50%",
+            cursor: "pointer",
+            zIndex: 2,
+          }}
+        >
+          <FaTimes />
+        </button>
+
+        {/* Prev */}
+        <button
+          onClick={prev}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "12px",
+            transform: "translateY(-50%)",
+            background: "rgba(0,0,0,0.6)",
+            border: "none",
+            color: "#fff",
+            padding: "0.7rem",
+            borderRadius: "50%",
+            cursor: "pointer",
+            zIndex: 2,
+          }}
+        >
+          <FaChevronLeft />
+        </button>
+
+        {/* Next */}
+        <button
+          onClick={next}
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "12px",
+            transform: "translateY(-50%)",
+            background: "rgba(0,0,0,0.6)",
+            border: "none",
+            color: "#fff",
+            padding: "0.7rem",
+            borderRadius: "50%",
+            cursor: "pointer",
+            zIndex: 2,
+          }}
+        >
+          <FaChevronRight />
+        </button>
+
+        {/* Image */}
+        <img
+          src={images[current]}
+          alt="Project preview"
+          style={{
+            width: "100%",
+            height: "90vh",
+            objectFit: "contain",
+            display: "block",
+            background: "#000",
           }}
         />
-
-        {/* Controls */}
-        <button onClick={prev} style={navBtn('left')}>‹</button>
-        <button onClick={next} style={navBtn('right')}>›</button>
-        <button onClick={close} style={closeBtn}>×</button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-const navBtn = (side) => ({
-  position: 'absolute',
-  top: '50%',
-  [side]: '-45px',
-  transform: 'translateY(-50%)',
-  background: 'rgba(0,0,0,0.6)',
-  color: '#d4af37',
-  border: 'none',
-  fontSize: '2rem',
-  cursor: 'pointer',
-})
-
-const closeBtn = {
-  position: 'absolute',
-  top: '-40px',
-  right: 0,
-  fontSize: '2rem',
-  color: '#d4af37',
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer',
-}
-
-export default ImageModal
+export default ImageModal;
