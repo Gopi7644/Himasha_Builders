@@ -1,15 +1,16 @@
 import React from 'react'
 import Service from './Service'
 import HeroSection from '../components/HeroSection'
-import ProjectsPage from '../components/ProjectsPage'
+import Enquiry from './Enquiry'
+import Contact from './Contact'
 
 const Home = () => {
   return (
     <div>
       <HeroSection />
       <Service />
-      
-      
+      <Enquiry />
+      <Contact />
     </div>
   )
 }

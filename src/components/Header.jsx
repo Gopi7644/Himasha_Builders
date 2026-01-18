@@ -150,7 +150,7 @@ const Header = () => {
 
         {/* Desktop Nav */}
         <nav style={navLinks}>
-          {['/', '/service', '/inquiry', '/contact'].map((path, i) => (
+          {['/', '/service', '/enquiry', '/contact'].map((path, i) => (
             <NavLink
               key={path}
               to={path}
@@ -179,7 +179,7 @@ const Header = () => {
       {/* Mobile Drawer */}
       {open && (
         <div style={drawer}>
-          {['/', '/service', '/inquiry', '/contact'].map((path, i) => (
+          {['/', '/service', '/enquiry', '/contact'].map((path, i) => (
             <NavLink
               key={path}
               to={path}
