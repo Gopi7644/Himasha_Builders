@@ -10,32 +10,60 @@ const Header = () => {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 820)
+  const [showHeader, setShowHeader] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 18)
-    const onResize = () => setIsMobile(window.innerWidth <= 820)
+  const onScroll = () => {
+    const currentScrollY = window.scrollY
 
-    window.addEventListener('scroll', onScroll)
-    window.addEventListener('resize', onResize)
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onResize)
+    setScrolled(currentScrollY > 18)
+
+    // scroll down → hide
+    if (currentScrollY > lastScrollY && currentScrollY > 120) {
+      setShowHeader(false)
     }
-  }, [])
+    // scroll up → show
+    else {
+      setShowHeader(true)
+    }
+
+    setLastScrollY(currentScrollY)
+  }
+
+  const onResize = () => setIsMobile(window.innerWidth <= 820)
+
+  window.addEventListener('scroll', onScroll)
+  window.addEventListener('resize', onResize)
+
+  return () => {
+    window.removeEventListener('scroll', onScroll)
+    window.removeEventListener('resize', onResize)
+  }
+}, [lastScrollY])
+
 
   /* ================== STYLES ================== */
 
   const headerStyle = {
-    position: 'sticky',
-    top: 0,
-    zIndex: 60,
-    background: scrolled
-      ? 'linear-gradient(135deg, #0f172a 0%, #111827 100%)'
-      : 'linear-gradient(135deg, #111827 0%, #1c1c1c 100%)',
-    borderBottom: '1px solid rgba(212,175,55,0.15)',
-    boxShadow: scrolled ? '0 10px 30px rgba(0,0,0,0.45)' : 'none',
-    transition: 'all 220ms ease',
-  }
+  position: 'sticky',
+  top: 0,
+  zIndex: 60,
+
+  transform: showHeader ? 'translateY(0)' : 'translateY(-110%)',
+  opacity: showHeader ? 1 : 0,
+
+  transition: 'transform 420ms cubic-bezier(0.4,0,0.2,1), opacity 300ms ease',
+
+  background: scrolled
+    ? 'linear-gradient(135deg, #0f172a 0%, #111827 100%)'
+    : 'linear-gradient(135deg, #111827 0%, #1c1c1c 100%)',
+
+  borderBottom: '1px solid rgba(212,175,55,0.15)',
+  boxShadow: scrolled ? '0 10px 30px rgba(0,0,0,0.45)' : 'none',
+}
+
 
   const container = {
     maxWidth: '1360px',

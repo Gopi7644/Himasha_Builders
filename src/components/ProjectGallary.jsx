@@ -1,10 +1,17 @@
-import { PROJECTS } from '../data/projects'
+import { useState } from 'react'
+import ImageModal from './ImageModal'
 
-const ProjectGallery = ({ active }) => {
-  const images = PROJECTS[active] || []
+const ProjectGallery = ({ images }) => {
+  const [visible, setVisible] = useState(20)
+  const [activeIndex, setActiveIndex] = useState(null)
 
   return (
-    <section style={{ padding: '4rem 1.25rem', background: '#111827' }}>
+    <section
+      style={{
+        padding: '3rem 1.25rem',
+        background: '#111827',
+      }}
+    >
       <div
         style={{
           maxWidth: '1300px',
@@ -14,23 +21,56 @@ const ProjectGallery = ({ active }) => {
           gap: '1rem',
         }}
       >
-        {images.map((img, i) => (
+        {images.slice(0, visible).map((img, i) => (
           <img
             key={i}
             src={img}
             loading="lazy"
-            alt="Project"
+            onClick={() => setActiveIndex(i)}
             style={{
               width: '100%',
               height: '220px',
               objectFit: 'cover',
               borderRadius: '12px',
               cursor: 'pointer',
-              transition: '0.3s',
+              transition: 'transform .3s',
             }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.transform = 'scale(1.04)')
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.transform = 'scale(1)')
+            }
           />
         ))}
       </div>
+
+      {/* Load More */}
+      {visible < images.length && (
+        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <button
+            onClick={() => setVisible((v) => v + 20)}
+            style={{
+              background:
+                'linear-gradient(135deg,#d4af37,#b8962e)',
+              color: '#111827',
+              padding: '0.7rem 1.6rem',
+              borderRadius: '10px',
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Load More
+          </button>
+        </div>
+      )}
+
+      <ImageModal
+        images={images}
+        index={activeIndex}
+        setIndex={setActiveIndex}
+      />
     </section>
   )
 }

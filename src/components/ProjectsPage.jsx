@@ -1,14 +1,18 @@
-import { useState } from 'react'
-import Services from './Services'
+import { PROJECTS } from '../data/projects'
 import ProjectGallery from './ProjectGallary'
+import BeforeAfter from '../components/BeforeAfter'
+import Services from './Services'
 
 const ProjectsPage = () => {
-  const [active, setActive] = useState('interior')
-
   return (
     <>
-      <Services onSelect={setActive} />
-      <ProjectGallery active={active} />
+      <Services />
+      <ProjectGallery images={PROJECTS.interior} />
+
+      <BeforeAfter
+        before={PROJECTS.interior[0]}
+        after={PROJECTS.interior[1]}
+      />
     </>
   )
 }

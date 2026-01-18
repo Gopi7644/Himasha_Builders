@@ -1,5 +1,5 @@
 import FloatingForm from "./FloatingForm";
-import heroBg from "../assets/Flat/IMG-20251201-WA0011.jpg";
+import heroBg from "../assets/heroBg.jpg";
 import "../styles/hero.css";
 
 const HeroSection = () => {
