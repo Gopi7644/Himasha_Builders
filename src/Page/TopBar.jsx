@@ -49,7 +49,7 @@ const TopBar = () => {
             }}
           >
             RK Puram Near Peepal Tree Chowk,<br />
-            <span className="ml-1">Shaguna, Danapur, Patna</span>
+            <span className="ml-1">Saguna, Danapur, Patna</span>
           </a>
         </p>
 

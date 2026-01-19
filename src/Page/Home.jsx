@@ -5,6 +5,7 @@ import Enquiry from './Enquiry'
 import Contact from './Contact'
 import DesignProcess from '../components/DesignProcess'
 import ProjectsShowcase from '../components/ProjectsShowcase'
+import Testimonials from '../components/Testimonials'
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
       <DesignProcess />
       <ProjectsShowcase />
       <Service />
+      <Testimonials />
       <Enquiry />
       <Contact />
     </div>

@@ -15,54 +15,54 @@ const Header = () => {
 
 
   useEffect(() => {
-  const onScroll = () => {
-    const currentScrollY = window.scrollY
+    const onScroll = () => {
+      const currentScrollY = window.scrollY
 
-    setScrolled(currentScrollY > 18)
+      setScrolled(currentScrollY > 18)
 
-    // scroll down → hide
-    if (currentScrollY > lastScrollY && currentScrollY > 120) {
-      setShowHeader(false)
+      // scroll down → hide
+      if (currentScrollY > lastScrollY && currentScrollY > 120) {
+        setShowHeader(false)
+      }
+      // scroll up → show
+      else {
+        setShowHeader(true)
+      }
+
+      setLastScrollY(currentScrollY)
     }
-    // scroll up → show
-    else {
-      setShowHeader(true)
+
+    const onResize = () => setIsMobile(window.innerWidth <= 820)
+
+    window.addEventListener('scroll', onScroll)
+    window.addEventListener('resize', onResize)
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
     }
-
-    setLastScrollY(currentScrollY)
-  }
-
-  const onResize = () => setIsMobile(window.innerWidth <= 820)
-
-  window.addEventListener('scroll', onScroll)
-  window.addEventListener('resize', onResize)
-
-  return () => {
-    window.removeEventListener('scroll', onScroll)
-    window.removeEventListener('resize', onResize)
-  }
-}, [lastScrollY])
+  }, [lastScrollY])
 
 
   /* ================== STYLES ================== */
 
   const headerStyle = {
-  position: 'sticky',
-  top: 0,
-  zIndex: 60,
+    position: 'sticky',
+    top: 0,
+    zIndex: 60,
 
-  transform: showHeader ? 'translateY(0)' : 'translateY(-110%)',
-  opacity: showHeader ? 1 : 0,
+    transform: showHeader ? 'translateY(0)' : 'translateY(-110%)',
+    opacity: showHeader ? 1 : 0,
 
-  transition: 'transform 420ms cubic-bezier(0.4,0,0.2,1), opacity 300ms ease',
+    transition: 'transform 420ms cubic-bezier(0.4,0,0.2,1), opacity 300ms ease',
 
-  background: scrolled
-    ? 'linear-gradient(135deg, #0f172a 0%, #111827 100%)'
-    : 'linear-gradient(135deg, #111827 0%, #1c1c1c 100%)',
+    background: scrolled
+      ? 'linear-gradient(135deg, #0f172a 0%, #111827 100%)'
+      : 'linear-gradient(135deg, #111827 0%, #1c1c1c 100%)',
 
-  borderBottom: '1px solid rgba(212,175,55,0.15)',
-  boxShadow: scrolled ? '0 10px 30px rgba(0,0,0,0.45)' : 'none',
-}
+    borderBottom: '1px solid rgba(212,175,55,0.15)',
+    boxShadow: scrolled ? '0 10px 30px rgba(0,0,0,0.45)' : 'none',
+  }
 
 
   const container = {
@@ -162,14 +162,32 @@ const Header = () => {
       <div style={container}>
         {/* Logo */}
         <NavLink to="/" style={logoWrap}>
-          <img
-            src={logo}
-            alt="Himasha Builders"
+          <div
             style={{
-              width: isMobile ? '42px' : '52px',
-              filter: 'drop-shadow(0 6px 18px rgba(212,175,55,0.4))',
+              width: isMobile ? '46px' : '58px',
+              height: isMobile ? '46px' : '58px',
+              borderRadius: '50%',
+              padding: '1px',
+              background: 'linear-gradient(135deg, #d4af37, #b8962e)',
+              boxShadow: '0 8px 22px rgba(212,175,55,0.45)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-          />
+          >
+            <img
+              src={logo}
+              alt="Himasha Builders"
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                background: '#111827',
+              }}
+            />
+          </div>
+
           <div>
             <div style={brand}>Himasha Builders</div>
             <div style={tag}>& Construction Pvt. Ltd.</div>
