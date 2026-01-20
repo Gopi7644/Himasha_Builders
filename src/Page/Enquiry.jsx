@@ -2,6 +2,9 @@ import { useState } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaPaperPlane, FaCheckCircle } from "react-icons/fa";
 
 const Enquiry = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -10,23 +13,56 @@ const Enquiry = () => {
     message: "",
   });
 
+
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // 🔹 Here you can integrate backend / email later
-    setShowSuccess(true);
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/enquiry`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      );
 
-    setForm({ name: "", email: "", phone: "", service: "", message: "" });
+      const data = await res.json();
 
-    // Auto close modal after 3 seconds
-    setTimeout(() => setShowSuccess(false), 3000);
+      if (data.success) {
+        // 🔥 Success
+        setShowSuccess(true);
+        setForm({
+          name: "",
+          email: "",
+          phone: "",
+          service: "",
+          message: "",
+        });
+
+        // Auto close modal after 3 seconds
+        setTimeout(() => setShowSuccess(false), 3000);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Server not reachable. Please try later.");
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <section
@@ -88,13 +124,24 @@ const Enquiry = () => {
 
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
             <FaPhoneAlt color="#d4af37" />
-            <span>+91 7739905017</span>
+            <a
+              href="tel:+917739905017"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              +91 7739905017
+            </a>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
             <FaEnvelope color="#d4af37" />
-            <span>info@himashabuilders.com</span>
+            <a
+              href="mailto:info@himashabuilders.com"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              info@himashabuilders.com
+            </a>
           </div>
+
 
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <FaMapMarkerAlt color="#d4af37" />
@@ -184,6 +231,7 @@ const Enquiry = () => {
               <option value="Interior">Home Interior</option>
               <option value="Marriage">Marriage Hall</option>
               <option value="Shop">Shop Design</option>
+              <option value="Any">Any Others</option>
             </select>
 
             <textarea
@@ -197,6 +245,7 @@ const Enquiry = () => {
 
             <button
               type="submit"
+              disabled={loading}
               style={{
                 marginTop: "1rem",
                 padding: "0.9rem 2rem",
@@ -205,21 +254,25 @@ const Enquiry = () => {
                 color: "#111827",
                 fontWeight: 700,
                 border: "none",
-                cursor: "pointer",
+                cursor: loading ? "not-allowed" : "pointer",
+                opacity: loading ? 0.7 : 1,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 10,
-                boxShadow: "0 14px 32px rgba(212,175,55,.35)",
-                transition: "transform .3s ease",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
-              <FaPaperPlane /> Submit Enquiry
+              {loading ? "Submitting..." : "Submit Enquiry"}
             </button>
+
           </div>
         </form>
+        {error && (
+          <p style={{ color: "#ff6b6b", marginBottom: "1rem" }}>
+            {error}
+          </p>
+        )}
+
       </div>
 
       {/* ================= SUCCESS MODAL ================= */}

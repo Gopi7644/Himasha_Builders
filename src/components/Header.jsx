@@ -196,7 +196,7 @@ const Header = () => {
 
         {/* Desktop Nav */}
         <nav style={navLinks}>
-          {['/', '/service', '/enquiry', '/contact'].map((path, i) => (
+          {['/', '/service', '/products', '/enquiry'].map((path, i) => (
             <NavLink
               key={path}
               to={path}
@@ -207,7 +207,7 @@ const Header = () => {
                 borderBottomColor: isActive ? GOLD : 'transparent',
               })}
             >
-              {['Home', 'Services', 'Enquiry', 'Contact'][i]}
+              {['Home', 'Services', 'Products', 'Enquiry'][i]}
             </NavLink>
           ))}
 
@@ -225,7 +225,7 @@ const Header = () => {
       {/* Mobile Drawer */}
       {open && (
         <div style={drawer}>
-          {['/', '/service', '/enquiry', '/contact'].map((path, i) => (
+          {['/', '/service', '/products', '/enquiry'].map((path, i) => (
             <NavLink
               key={path}
               to={path}
@@ -237,7 +237,7 @@ const Header = () => {
                 color: isActive ? GOLD : '#f5f5f5',
               })}
             >
-              {['Home', 'Services', 'Enquiry', 'Contact'][i]}
+              {['Home', 'Services', 'Products', 'Enquiry'][i]}
             </NavLink>
           ))}
         </div>

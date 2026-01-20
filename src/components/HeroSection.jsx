@@ -32,7 +32,7 @@ const HeroSection = () => {
         overflow: "hidden",
       }}
     >
-      {/* 🖼 Background Images */}
+      {/* 🌄 Background Images */}
       {HERO_IMAGES.map((img, i) => (
         <div
           key={img}
@@ -47,7 +47,6 @@ const HeroSection = () => {
           }}
         />
       ))}
-
       {/* 🌑 Ultra-Premium Gradient Overlay */}
       <div
         style={{

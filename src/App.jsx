@@ -2,9 +2,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./Applayout/Layout.jsx";
 import Home from "./Page/Home.jsx";
 import Service from "./Page/Service.jsx";
-import Contact from "./Page/Contact.jsx";
 import Enquiry from "./Page/Enquiry.jsx";
 import ErrorPage from "./Page/ErrorPage.jsx";
+import Products from "./Page/Produts.jsx";
 
 const Router = createBrowserRouter([
   {
@@ -21,8 +21,8 @@ const Router = createBrowserRouter([
         element: <Service />,
       },
       {
-        path: "contact",          // "/contact"
-        element: <Contact />,
+        path: "products",          // "/products"
+        element: <Products />,
       },
       {
         path: "enquiry",          // "/enquiry"
