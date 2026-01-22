@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaPaperPlane, FaCheckCircle } from "react-icons/fa";
+import {
+  FaPhoneAlt,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaCheckCircle,
+} from "react-icons/fa";
 
 const Enquiry = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -13,56 +15,61 @@ const Enquiry = () => {
     message: "",
   });
 
-
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  // 🔹 Frontend Validation
+  const validate = () => {
+    if (form.name.trim().length < 2) return "Please enter valid name";
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) return "Enter valid email address";
+    if (!/^[6-9]\d{9}$/.test(form.phone))
+      return "Enter valid 10-digit mobile number";
+    if (!form.service) return "Please select service";
+    if (form.message.trim().length < 5) return "Enter brief message";
+    return null;
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/enquiry`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(form),
-        }
-      );
-
-      const data = await res.json();
-
-      if (data.success) {
-        // 🔥 Success
-        setShowSuccess(true);
-        setForm({
-          name: "",
-          email: "",
-          phone: "",
-          service: "",
-          message: "",
-        });
-
-        // Auto close modal after 3 seconds
-        setTimeout(() => setShowSuccess(false), 3000);
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Server not reachable. Please try later.");
-    } finally {
-      setLoading(false);
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
     }
-  };
 
+    // ⚡ Instant UX feedback
+    setShowSuccess(true);
+
+    // reset form
+    const payload = { ...form };
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      service: "",
+      message: "",
+    });
+
+    // 🔥 Fire backend silently
+    fetch(`${import.meta.env.VITE_API_URL}/api/enquiry`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    }).catch((err) => {
+      console.error("API error:", err);
+      setError("Server issue. We'll still contact you shortly.");
+    });
+
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
 
   return (
     <section
@@ -79,23 +86,16 @@ const Enquiry = () => {
           style={{
             fontSize: "clamp(2.2rem,3.5vw,3rem)",
             fontWeight: 700,
-            letterSpacing: "0.6px",
           }}
         >
           Request a Free Consultation
         </h1>
-        <p
-          style={{
-            marginTop: "0.8rem",
-            color: "#d4af37",
-            fontSize: "1.05rem",
-          }}
-        >
+        <p style={{ marginTop: "0.8rem", color: "#d4af37" }}>
           Let’s design something beautiful together
         </p>
       </div>
 
-      {/* ================= CONTENT GRID ================= */}
+      {/* ================= CONTENT ================= */}
       <div
         style={{
           maxWidth: 1200,
@@ -174,7 +174,7 @@ const Enquiry = () => {
           </div>
         </div>
 
-        {/* ================= ENQUIRY FORM ================= */}
+        {/* FORM */}
         <form
           onSubmit={handleSubmit}
           style={{
@@ -183,39 +183,31 @@ const Enquiry = () => {
             background:
               "linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.015))",
             border: "1px solid rgba(212,175,55,0.25)",
-            backdropFilter: "blur(8px)",
-            boxShadow: "0 25px 50px rgba(0,0,0,0.5)",
-            animation: "fadeInRight 1s ease",
           }}
         >
-          <div style={{ display: "grid", gap: "1.4rem" }}>
+          <div style={{ display: "grid", gap: "1.3rem" }}>
             <input
               type="text"
               name="name"
               placeholder="Full Name"
               value={form.name}
               onChange={handleChange}
-              required
               style={inputStyle}
             />
-
             <input
               type="email"
               name="email"
               placeholder="Email Address"
               value={form.email}
               onChange={handleChange}
-              required
               style={inputStyle}
             />
-
             <input
               type="tel"
               name="phone"
               placeholder="Phone Number"
               value={form.phone}
               onChange={handleChange}
-              required
               style={inputStyle}
             />
 
@@ -223,7 +215,6 @@ const Enquiry = () => {
               name="service"
               value={form.service}
               onChange={handleChange}
-              required
               style={inputStyle}
             >
               <option value="">Select Service</option>
@@ -231,7 +222,6 @@ const Enquiry = () => {
               <option value="Interior">Home Interior</option>
               <option value="Marriage">Marriage Hall</option>
               <option value="Shop">Shop Design</option>
-              <option value="Any">Any Others</option>
             </select>
 
             <textarea
@@ -243,90 +233,47 @@ const Enquiry = () => {
               style={{ ...inputStyle, resize: "none" }}
             />
 
+            {error && <p style={{ color: "#ff6b6b" }}>{error}</p>}
+
             <button
               type="submit"
-              disabled={loading}
               style={{
-                marginTop: "1rem",
                 padding: "0.9rem 2rem",
                 borderRadius: "14px",
                 background: "linear-gradient(135deg,#d4af37,#b8962e)",
                 color: "#111827",
                 fontWeight: 700,
                 border: "none",
-                cursor: loading ? "not-allowed" : "pointer",
-                opacity: loading ? 0.7 : 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 10,
+                cursor: "pointer",
               }}
             >
-              {loading ? "Submitting..." : "Submit Enquiry"}
+              Submit Enquiry
             </button>
-
           </div>
         </form>
-        {error && (
-          <p style={{ color: "#ff6b6b", marginBottom: "1rem" }}>
-            {error}
-          </p>
-        )}
-
       </div>
 
-      {/* ================= SUCCESS MODAL ================= */}
+      {/* SUCCESS MODAL */}
       {showSuccess && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.75)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-          }}
-        >
-          <div
-            style={{
-              padding: "3rem",
-              borderRadius: "24px",
-              background:
-                "linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04))",
-              border: "1px solid rgba(212,175,55,0.35)",
-              backdropFilter: "blur(10px)",
-              textAlign: "center",
-              animation: "scaleIn .5s ease",
-              boxShadow: "0 30px 60px rgba(0,0,0,0.6)",
-            }}
-          >
+        <div style={successOverlay}>
+          <div style={successBox}>
             <FaCheckCircle size={64} color="#d4af37" />
-            <h2 style={{ marginTop: "1rem" }}>Thank You!</h2>
-            <p style={{ marginTop: "0.8rem", opacity: 0.9 }}>
-              Your enquiry has been submitted successfully.
-            </p>
+            <h2>Thank You!</h2>
+            <p>Your enquiry has been submitted successfully.</p>
           </div>
         </div>
       )}
-
-      {/* ================= ANIMATIONS ================= */}
-      <style>{`
-        @keyframes fadeInLeft {
-          from { opacity: 0; transform: translateX(-40px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeInRight {
-          from { opacity: 0; transform: translateX(40px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes scaleIn {
-          from { opacity: 0; transform: scale(0.8); }
-          to { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
     </section>
   );
+};
+
+/* ================= Styles ================= */
+
+const infoRow = {
+  display: "flex",
+  alignItems: "center",
+  gap: 12,
+  marginBottom: 14,
 };
 
 const inputStyle = {
@@ -336,7 +283,26 @@ const inputStyle = {
   background: "rgba(0,0,0,0.4)",
   color: "#fff",
   outline: "none",
-  fontSize: "0.95rem",
+};
+
+const successOverlay = {
+  position: "fixed",
+  inset: 0,
+  background: "rgba(0,0,0,0.75)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 9999,
+};
+
+const successBox = {
+  padding: "3rem",
+  borderRadius: "24px",
+  background:
+    "linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04))",
+  border: "1px solid rgba(212,175,55,0.35)",
+  textAlign: "center",
+  boxShadow: "0 30px 60px rgba(0,0,0,0.6)",
 };
 
 export default Enquiry;

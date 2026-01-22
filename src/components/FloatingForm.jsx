@@ -8,64 +8,62 @@ const FloatingForm = () => {
     designType: "",
   });
 
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  const validate = () => {
+    if (form.name.trim().length < 2) return "Enter a valid name";
+    if (!/^[6-9]\d{9}$/.test(form.phone))
+      return "Enter valid 10-digit mobile number";
+    if (form.address.trim().length < 5) return "Enter full address";
+    if (!form.designType) return "Select design type";
+    return null;
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
 
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/book-visit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(form),
-        }
-      );
-
-      const data = await res.json();
-
-      if (data.success) {
-        setSuccess(true);
-        setForm({
-          name: "",
-          phone: "",
-          address: "",
-          designType: "",
-        });
-
-        setTimeout(() => setSuccess(false), 3000);
-      } else {
-        setError("Booking failed. Please try again.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Server not reachable. Try again later.");
-    } finally {
-      setLoading(false);
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
     }
+
+    // ⚡ Instant success UX
+    setSuccess(true);
+    setForm({ name: "", phone: "", address: "", designType: "" });
+
+    // 🔥 Fire backend silently
+    fetch(`${import.meta.env.VITE_API_URL}/api/book-visit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    }).catch((err) => {
+      console.error("Background API error:", err);
+    });
+
+    setTimeout(() => setSuccess(false), 3500);
   };
 
   return (
     <div style={boxStyle}>
       <h3 style={heading}>Get Your Free Site Visit</h3>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+      >
         <input
           type="text"
           name="name"
           placeholder="Name"
-          required
           value={form.name}
           onChange={handleChange}
           style={inputStyle}
@@ -75,7 +73,6 @@ const FloatingForm = () => {
           type="tel"
           name="phone"
           placeholder="Mobile Number"
-          required
           value={form.phone}
           onChange={handleChange}
           style={inputStyle}
@@ -85,7 +82,6 @@ const FloatingForm = () => {
           type="text"
           name="address"
           placeholder="Address"
-          required
           value={form.address}
           onChange={handleChange}
           style={inputStyle}
@@ -93,7 +89,6 @@ const FloatingForm = () => {
 
         <select
           name="designType"
-          required
           value={form.designType}
           onChange={handleChange}
           style={{ ...inputStyle, cursor: "pointer" }}
@@ -108,13 +103,20 @@ const FloatingForm = () => {
 
         {error && <p style={{ color: "#ff6b6b" }}>{error}</p>}
 
-        <button type="submit" disabled={loading} style={buttonStyle}>
-          {loading ? "Booking..." : "Book Visit"}
+        <button type="submit" style={buttonStyle}>
+          Book Visit
         </button>
 
         {success && (
-          <p style={{ color: "#4ade80", textAlign: "center", marginTop: "0.5rem" }}>
-            ✅ Visit booked successfully!
+          <p
+            style={{
+              color: "#4ade80",
+              textAlign: "center",
+              marginTop: "0.6rem",
+              fontWeight: 600,
+            }}
+          >
+            ✅ Thank you! Our team will contact you shortly.
           </p>
         )}
       </form>

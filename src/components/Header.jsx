@@ -1,249 +1,176 @@
-import React, { useState, useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
-import logo from '../assets/logo-hb.jpeg'
-import TopBar from '../Page/TopBar'
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
+import logo from "../assets/logo-hb.jpeg";
+import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 
-
-const GOLD = '#d4af37'
+const MENU = [
+  {
+    title: "Kitchens",
+    path: "/kitchens",
+    items: [
+      "Modular Kitchens",
+      "Kitchen Cost Calculator",
+      "Design Ideas",
+      "Kitchen Configurator",
+    ],
+  },
+  {
+    title: "Wardrobes",
+    path: "/wardrobes",
+    items: ["Sliding Wardrobes", "Walk-in Wardrobes", "Luxury Closets"],
+  },
+  {
+    title: "Doors & Windows",
+    path: "/doors",
+    items: ["Main Doors", "Windows", "Balcony Doors"],
+  },
+  // {
+  //   title: "Furnishings",
+  //   path: "/furnishings",
+  //   items: ["Curtains", "Blinds", "Sofas", "Upholstery"],
+  // },
+  {
+    title: "Bathware",
+    path: "/bathware",
+    items: ["Showers", "Sanitaryware", "Mirrors"],
+  },
+  {
+    title: "Lights",
+    path: "/lights",
+    items: ["Chandeliers", "LED Panels", "Decorative Lights"],
+  },
+  {
+    title: "Design Ideas",
+    path: "/ideas",
+    items: ["Small Homes", "Luxury Homes", "Budget Interiors"],
+  },
+];
 
 const Header = () => {
-  const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 820)
-  const [showHeader, setShowHeader] = useState(true)
-  const [lastScrollY, setLastScrollY] = useState(0)
-
-
-  useEffect(() => {
-    const onScroll = () => {
-      const currentScrollY = window.scrollY
-
-      setScrolled(currentScrollY > 18)
-
-      // scroll down → hide
-      if (currentScrollY > lastScrollY && currentScrollY > 120) {
-        setShowHeader(false)
-      }
-      // scroll up → show
-      else {
-        setShowHeader(true)
-      }
-
-      setLastScrollY(currentScrollY)
-    }
-
-    const onResize = () => setIsMobile(window.innerWidth <= 820)
-
-    window.addEventListener('scroll', onScroll)
-    window.addEventListener('resize', onResize)
-
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onResize)
-    }
-  }, [lastScrollY])
-
-
-  /* ================== STYLES ================== */
-
-  const headerStyle = {
-    position: 'sticky',
-    top: 0,
-    zIndex: 60,
-
-    transform: showHeader ? 'translateY(0)' : 'translateY(-110%)',
-    opacity: showHeader ? 1 : 0,
-
-    transition: 'transform 420ms cubic-bezier(0.4,0,0.2,1), opacity 300ms ease',
-
-    background: scrolled
-      ? 'linear-gradient(135deg, #0f172a 0%, #111827 100%)'
-      : 'linear-gradient(135deg, #111827 0%, #1c1c1c 100%)',
-
-    borderBottom: '1px solid rgba(212,175,55,0.15)',
-    boxShadow: scrolled ? '0 10px 30px rgba(0,0,0,0.45)' : 'none',
-  }
-
-
-  const container = {
-    maxWidth: '1360px',
-    margin: '0 auto',
-    padding: isMobile ? '0.7rem 1rem' : '0.85rem 1.25rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }
-
-  const logoWrap = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    textDecoration: 'none',
-  }
-
-  const brand = {
-    fontSize: isMobile ? '1.05rem' : '1.35rem',
-    fontWeight: 800,
-    color: '#f5f5f5',
-    letterSpacing: '0.6px',
-    whiteSpace: 'nowrap',
-  }
-
-  const tag = {
-    fontSize: '0.8rem',
-    color: '#c7b873',
-    display: isMobile ? 'none' : 'block',
-  }
-
-  const navLinks = {
-    display: isMobile ? 'none' : 'flex',
-    gap: '1.2rem',
-    alignItems: 'center',
-  }
-
-  const linkBase = {
-    color: '#e5e7eb',
-    textDecoration: 'none',
-    fontWeight: 500,
-    padding: '0.4rem 0.25rem',
-    borderBottom: '2px solid transparent',
-    transition: 'all 180ms ease',
-  }
-
-  const cta = {
-    background: 'linear-gradient(135deg, #d4af37 0%, #b8962e 100%)',
-    color: '#111827',
-    padding: '0.5rem 1rem',
-    borderRadius: '10px',
-    fontWeight: 700,
-    textDecoration: 'none',
-    boxShadow: '0 6px 20px rgba(212,175,55,0.35)',
-    transition: 'all 180ms ease',
-  }
-
-  const menuBtn = {
-    display: isMobile ? 'flex' : 'none',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(212,175,55,0.25)',
-    borderRadius: '8px',
-    width: '40px',
-    height: '40px',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-  }
-
-  const drawer = {
-    position: 'absolute',
-    top: '64px',
-    right: '1rem',
-    left: '1rem',
-    background: 'linear-gradient(135deg, #0f172a 0%, #1c1c1c 100%)',
-    borderRadius: '12px',
-    padding: '0.75rem',
-    border: '1px solid rgba(212,175,55,0.25)',
-    boxShadow: '0 25px 50px rgba(0,0,0,0.6)',
-  }
-
-  const mobileLink = {
-    padding: '0.75rem 1rem',
-    borderRadius: '8px',
-    textDecoration: 'none',
-    color: '#f5f5f5',
-    fontWeight: 500,
-    borderLeft: '3px solid transparent',
-  }
-
-  /* ================== JSX ================== */
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeMobileMenu, setActiveMobileMenu] = useState(null);
 
   return (
-    <header style={headerStyle}>
-      <TopBar />
-      <div style={container}>
+    <header className="sticky top-0 z-50 bg-[#0b0f1a] border-b border-[rgba(212,175,55,0.2)]">
+      {/* ================= DESKTOP HEADER ================= */}
+      <div className="max-w-350 mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <NavLink to="/" style={logoWrap}>
-          <div
-            style={{
-              width: isMobile ? '46px' : '58px',
-              height: isMobile ? '46px' : '58px',
-              borderRadius: '50%',
-              padding: '1px',
-              background: 'linear-gradient(135deg, #d4af37, #b8962e)',
-              boxShadow: '0 8px 22px rgba(212,175,55,0.45)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <img
-              src={logo}
-              alt="Himasha Builders"
-              style={{
-                width: '100%',
-                height: '100%',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                background: '#111827',
-              }}
-            />
-          </div>
-
+        <NavLink to="/" className="flex items-center gap-3">
+          <img
+            src={logo}
+            alt="Logo"
+            className="w-12 h-12 rounded-full border-2 border-[#d4af37]"
+          />
           <div>
-            <div style={brand}>Himasha Builders</div>
-            <div style={tag}>& Construction Pvt. Ltd.</div>
+            <div className="text-lg font-extrabold text-white">
+              Himasha Builders
+            </div>
+            <div className="text-sm text-[#d4af37]">
+              & Construction Pvt. Ltd.
+            </div>
           </div>
         </NavLink>
 
-        {/* Desktop Nav */}
-        <nav style={navLinks}>
-          {['/', '/service', '/products', '/enquiry'].map((path, i) => (
-            <NavLink
-              key={path}
-              to={path}
-              end={path === '/'}
-              style={({ isActive }) => ({
-                ...linkBase,
-                color: isActive ? GOLD : '#e5e7eb',
-                borderBottomColor: isActive ? GOLD : 'transparent',
-              })}
-            >
-              {['Home', 'Services', 'Products', 'Enquiry'][i]}
-            </NavLink>
-          ))}
+        {/* Desktop Menu */}
+        <nav className="hidden md:flex gap-8">
+          {MENU.map((menu) => (
+            <div key={menu.title} className="relative group">
+              <NavLink
+                to={menu.path}
+                className="text-gray-200 font-medium hover:text-[#d4af37] transition"
+              >
+                {menu.title}
+              </NavLink>
 
-          <NavLink to="/contact" style={cta}>
-            Get Quote
-          </NavLink>
+              {/* Dropdown */}
+              <div className="absolute top-full left-0 mt-4 w-64 bg-[#111827] rounded-xl shadow-xl border border-[rgba(212,175,55,0.3)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transform translate-y-3 group-hover:translate-y-0 transition-all duration-300">
+                {menu.items.map((item, i) => (
+                  <div
+                    key={i}
+                    className="px-5 py-3 text-gray-200 hover:bg-[#d4af37] hover:text-black cursor-pointer transition"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </nav>
 
-        {/* Mobile Button */}
-        <button style={menuBtn} onClick={() => setOpen(!open)}>
-          <span style={{ color: GOLD, fontSize: '1.4rem' }}>☰</span>
+        {/* CTA */}
+        <NavLink
+          to="/enquiry"
+          className="hidden md:inline-block bg-linear-to-r from-[#d4af37] to-[#b8962e] text-black px-5 py-2 rounded-lg font-bold"
+        >
+          Book Appointment
+        </NavLink>
+
+        {/* Mobile Hamburger */}
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="md:hidden text-white text-2xl"
+        >
+          <FiMenu />
         </button>
       </div>
 
-      {/* Mobile Drawer */}
-      {open && (
-        <div style={drawer}>
-          {['/', '/service', '/products', '/enquiry'].map((path, i) => (
-            <NavLink
-              key={path}
-              to={path}
-              onClick={() => setOpen(false)}
-              style={({ isActive }) => ({
-                ...mobileLink,
-                background: isActive ? 'rgba(212,175,55,0.15)' : 'transparent',
-                borderLeftColor: isActive ? GOLD : 'transparent',
-                color: isActive ? GOLD : '#f5f5f5',
-              })}
+      {/* ================= MOBILE MENU ================= */}
+      {mobileOpen && (
+        <div className="fixed inset-0 bg-[#0b0f1a] z-50 p-6 overflow-y-auto">
+          <div className="flex justify-between items-center mb-6">
+            <span className="text-[#d4af37] font-bold text-lg">Menu</span>
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="text-white text-2xl"
             >
-              {['Home', 'Services', 'Products', 'Enquiry'][i]}
-            </NavLink>
+              <FiX />
+            </button>
+          </div>
+
+          {MENU.map((menu, i) => (
+            <div key={menu.title} className="mb-4">
+              {/* Main Menu */}
+              <div
+                onClick={() =>
+                  setActiveMobileMenu(activeMobileMenu === i ? null : i)
+                }
+                className="flex justify-between items-center text-white font-medium text-lg cursor-pointer hover:text-[#d4af37] transition"
+              >
+                {menu.title}
+                <FiChevronDown
+                  className={`transition-transform ${
+                    activeMobileMenu === i ? "rotate-180" : ""
+                  }`}
+                />
+              </div>
+
+              {/* Submenu */}
+              {activeMobileMenu === i && (
+                <div className="ml-4 mt-2 space-y-2">
+                  {menu.items.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="text-gray-300 hover:text-[#d4af37] cursor-pointer transition"
+                    >
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
+
+          <NavLink
+            to="/contact"
+            onClick={() => setMobileOpen(false)}
+            className="mt-8 inline-block bg-linear-to-r from-[#d4af37] to-[#b8962e] text-black px-5 py-2 rounded-lg font-bold"
+          >
+            Book Appointment
+          </NavLink>
         </div>
       )}
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

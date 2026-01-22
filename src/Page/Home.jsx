@@ -1,11 +1,11 @@
 import React from 'react'
-import Service from './Service'
 import HeroSection from '../components/HeroSection'
 import Enquiry from './Enquiry'
 import DesignProcess from '../components/DesignProcess'
 import ProjectsShowcase from '../components/ProjectsShowcase'
 import Testimonials from '../components/Testimonials'
 import Products from './Produts'
+import Services from '../components/Services'
 
 const Home = () => {
   return (
@@ -13,7 +13,7 @@ const Home = () => {
       <HeroSection />
       <DesignProcess />
       <ProjectsShowcase />
-      <Service />
+      <Services />
       <Testimonials />
       <Enquiry />
       <Products />
