@@ -77,7 +77,7 @@ const Doors = () => {
           </p>
           <NavLink
             to="/enquiry"
-            className="inline-block mt-8 px-8 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#b8962e] text-black font-bold"
+            className="inline-block mt-8 px-8 py-3 rounded-full bg-linear-to-r from-[#d4af37] to-[#b8962e] text-black font-bold"
           >
             Get Free Consultation
           </NavLink>
@@ -108,7 +108,7 @@ const Doors = () => {
             <img
               src={item.image}
               alt={item.title}
-              className="w-full h-[260px] object-cover group-hover:scale-105 transition duration-500"
+              className="w-full h-65 object-cover group-hover:scale-105 transition duration-500"
             />
             <div className="p-6">
               <span className="text-sm text-[#d4af37] font-semibold">
@@ -141,7 +141,7 @@ const Doors = () => {
         </p>
         <NavLink
           to="/enquiry"
-          className="inline-block mt-8 px-8 py-3 rounded-full bg-gradient-to-r from-[#d4af37] to-[#b8962e] text-black font-bold"
+          className="inline-block mt-8 px-8 py-3 rounded-full bg-linear-to-r from-[#d4af37] to-[#b8962e] text-black font-bold"
         >
           Talk to Our Expert
         </NavLink>
