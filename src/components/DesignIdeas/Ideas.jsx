@@ -1,13 +1,13 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-import heroImg from "../assets/ideas/interior-hero.jpg";
-import livingImg from "../assets/ideas/living-room.jpg";
-import bedroomImg from "../assets/ideas/bedroom.jpg";
-import diningImg from "../assets/ideas/dining.jpg";
-import bathroomImg from "../assets/ideas/bathroom.jpg";
-import officeImg from "../assets/ideas/home-office.jpg";
-import kitchenImg from "../assets/ideas/kitchen.jpg";
+import heroImg from "../../assets/ideas/interior-hero.jpg";
+import livingImg from "../../assets/ideas/living-room.jpg";
+import bedroomImg from "../../assets/ideas/bedroom.jpg";
+import diningImg from "../../assets/ideas/dining.jpg";
+import bathroomImg from "../../assets/ideas/bathroom.jpg";
+import officeImg from "../../assets/ideas/home-office.jpg";
+import kitchenImg from "../../assets/ideas/kitchen.jpg";
 
 const ideasCategories = [
   {

@@ -1,13 +1,13 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-import heroImg from "../assets/lights/hero.jpg";
-import l1 from "../assets/lights/light1.jpg";
-import l2 from "../assets/lights/light2.jpg";
-import l3 from "../assets/lights/light3.jpg";
-import l4 from "../assets/lights/light4.jpg";
-import l5 from "../assets/lights/light5.jpg";
-import l6 from "../assets/lights/light6.jpg";
+import heroImg from "../../assets/lights/hero.jpg";
+import l1 from "../../assets/lights/light1.jpg";
+import l2 from "../../assets/lights/light2.jpg";
+import l3 from "../../assets/lights/light3.jpg";
+import l4 from "../../assets/lights/light4.jpg";
+import l5 from "../../assets/lights/light5.jpg";
+import l6 from "../../assets/lights/light6.jpg";
 
 const lights = [
   { title: "Luxury Chandeliers", style: "Premium", image: l1 },

@@ -90,7 +90,7 @@ const Footer = () => {
           <h4 style={{ color: GOLD, marginBottom: '0.75rem' }}>
             Quick Links
           </h4>
-          {['/', '/service', '/enquiry', '/contact'].map((path, i) => (
+          {['/', '/service', '/enquiry'].map((path, i) => (
             <NavLink
               key={path}
               to={path}
@@ -104,7 +104,7 @@ const Footer = () => {
               onMouseEnter={(e) => (e.currentTarget.style.color = GOLD)}
               onMouseLeave={(e) => (e.currentTarget.style.color = '#e5e7eb')}
             >
-              {['Home', 'Services', 'Enquiry', 'Contact'][i]}
+              {['Home', 'Services', 'Enquiry'][i]}
             </NavLink>
           ))}
         </div>

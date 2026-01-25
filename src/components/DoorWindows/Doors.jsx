@@ -1,13 +1,13 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-import heroImg from "../assets/doors/hero.jpg";
-import door1 from "../assets/doors/door1.jpg";
-import door2 from "../assets/doors/door2.jpg";
-import door3 from "../assets/doors/door3.jpg";
-import window1 from "../assets/doors/window1.jpg";
-import window2 from "../assets/doors/window2.jpg";
-import window3 from "../assets/doors/window3.jpg";
+import heroImg from "../../assets/doors/hero.jpg";
+import door1 from "../../assets/doors/door1.jpg";
+import door2 from "../../assets/doors/door2.jpg";
+import door3 from "../../assets/doors/door3.jpg";
+import window1 from "../../assets/doors/window1.jpg";
+import window2 from "../../assets/doors/window2.jpg";
+import window3 from "../../assets/doors/window3.jpg";
 
 const products = [
   {

@@ -1,15 +1,15 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-import heroImg from "../assets/wardrobes/hero.jpg";
-import w1 from "../assets/wardrobes/design1.jpg";
-import w2 from "../assets/wardrobes/design2.jpg";
-import w3 from "../assets/wardrobes/design3.jpg";
-import w4 from "../assets/wardrobes/design4.jpg";
-import w5 from "../assets/wardrobes/design5.jpg";
-import w6 from "../assets/wardrobes/design6.jpg";
-import w7 from "../assets/wardrobes/design7.jpg";
-import w8 from "../assets/wardrobes/design8.jpg";
+import heroImg from "../../assets/wardrobes/hero.jpg";
+import w1 from "../../assets/wardrobes/design1.jpg";
+import w2 from "../../assets/wardrobes/design2.jpg";
+import w3 from "../../assets/wardrobes/design3.jpg";
+import w4 from "../../assets/wardrobes/design4.jpg";
+import w5 from "../../assets/wardrobes/design5.jpg";
+import w6 from "../../assets/wardrobes/design6.jpg";
+import w7 from "../../assets/wardrobes/design7.jpg";
+import w8 from "../../assets/wardrobes/design8.jpg";
 
 const wardrobes = [
   { id: 1, title: "Sliding Door Wardrobe", style: "Modern", image: w1 },

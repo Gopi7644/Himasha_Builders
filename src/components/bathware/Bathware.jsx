@@ -1,11 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-import heroVideo from "../assets/bathware/hero.mp4";
-import bath1 from "../assets/bathware/bath1.jpg";
-import bath2 from "../assets/bathware/bath2.jpg";
-import bath3 from "../assets/bathware/bath3.jpg";
-import bath4 from "../assets/bathware/bath4.jpg";
+import heroVideo from "../../assets/bathware/hero.mp4";
+import bath1 from "../../assets/bathware/bath1.jpg";
+import bath2 from "../../assets/bathware/bath2.jpg";
+import bath3 from "../../assets/bathware/bath3.jpg";
+import bath4 from "../../assets/bathware/bath4.jpg";
 
 const bathwareItems = [
   {
