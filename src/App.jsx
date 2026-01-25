@@ -3,7 +3,6 @@ import Layout from "./Applayout/Layout.jsx";
 import Home from "./Page/Home.jsx";
 import Enquiry from "./Page/Enquiry.jsx";
 import ErrorPage from "./Page/ErrorPage.jsx";
-import Products from "./Page/Produts.jsx";
 import ServiceDetail from "./components/ServiceDetail.jsx";
 import Services from "./components/Services.jsx";
 
@@ -47,10 +46,6 @@ const Router = createBrowserRouter([
       {
         path: "service",          // "/services"
         element: <Services />,
-      },
-      {
-        path: "products",          // "/products"
-        element: <Products />,
       },
       {
         path: "enquiry",          // "/enquiry"

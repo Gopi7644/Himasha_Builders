@@ -207,10 +207,7 @@ const Enquiry = () => {
           >
             {loading ? "Submitting..." : "Submit Enquiry"}
           </button>
-
-          <p className="text-xs text-gray-400 text-center">
-            Your data is safe & confidential
-          </p>
+          
         </form>
       </div>
 
