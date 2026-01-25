@@ -1,86 +1,94 @@
-import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-
-/* ================= IMAGE IMPORTS ================= */
 import modular from "../../assets/kitchen/modular.jpg";
 import island from "../../assets/kitchen/island.jpg";
 import parallel from "../../assets/kitchen/parallel.jpg";
 import open from "../../assets/kitchen/open.jpg";
-
 import hero1 from "../../assets/kitchen/hero1.jpg";
-import hero2 from "../../assets/kitchen/hero2.jpg";
-import hero3 from "../../assets/kitchen/hero3.jpg";
-
-/* ================= DATA ================= */
-const heroSlides = [
-  { image: hero1, title: "Modular Kitchens", subtitle: "Designed for smart living" },
-  { image: hero2, title: "Island Kitchens", subtitle: "Luxury & social cooking" },
-  { image: hero3, title: "Open Kitchens", subtitle: "Seamless modern elegance" },
-];
 
 const kitchenTypes = [
   {
-    title: "Modular Kitchen",
-    desc: "Highly efficient, factory-finished cabinets with smart storage and modern design. Perfect for long-term durability and luxury living.",
+    title: "Modular Kitchens",
+    desc: "Precision-built factory finished kitchens with smart storage & premium finish.",
     image: modular,
   },
   {
-    title: "Island Kitchen",
-    desc: "A statement kitchen with a central island for cooking, dining and socializing. Ideal for spacious modern homes.",
+    title: "Island Kitchens",
+    desc: "Luxury kitchens with a central island for cooking, dining and social living.",
     image: island,
   },
   {
-    title: "Parallel Kitchen",
-    desc: "Best for compact homes, offering maximum efficiency and seamless workflow between cooking and cleaning zones.",
+    title: "Parallel Kitchens",
+    desc: "Best for compact homes with efficient workflow and space optimization.",
     image: parallel,
   },
   {
-    title: "Open Kitchen",
-    desc: "Blends your kitchen with living space for openness, light and premium aesthetics.",
+    title: "Open Kitchens",
+    desc: "Modern kitchens blending with living spaces for openness & elegance.",
     image: open,
   },
 ];
 
-const Kitchens = () => {
-  const [current, setCurrent] = useState(0);
-
-  /* ================= AUTO SLIDE (RIGHT → LEFT) ================= */
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % heroSlides.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
-
+const Kitchen = () => {
   return (
-    <section className="bg-linear-to-b from-gray-50 to-gray-100 min-h-screen">
+    <section className="bg-gray-50 overflow-x-hidden">
 
-      {/* ================= HERO SLIDER ================= */}
-      <div className="relative h-screen w-full overflow-hidden">
-        <div
-          className="flex h-full transition-transform duration-1000 ease-in-out"
-          style={{
-            transform: `translateX(-${current * 100}%)`,
-          }}
-        >
-          {heroSlides.map((slide, i) => (
+      {/* ================= HERO ================= */}
+      <div
+        className="relative min-h-screen flex items-center justify-center bg-cover bg-center will-change-transform"
+        style={{ backgroundImage: `url(${hero1})` }}
+      >
+        <div className="absolute inset-0 bg-black/10"></div>
+
+        <div className="relative bg-white/80 backdrop-blur-md px-8 md:px-12 py-10 md:py-14 rounded-3xl shadow-2xl text-center max-w-2xl mx-4">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+            Premium Modular Kitchens
+          </h1>
+          <p className="mt-4 text-gray-700 text-base md:text-lg">
+            Designed for elegance, engineered for everyday living
+          </p>
+          <NavLink
+            to="/enquiry"
+            className="inline-block mt-6 px-8 py-4 rounded-full bg-black text-white font-semibold transition-transform duration-300 hover:scale-105"
+          >
+            Book Free Consultation
+          </NavLink>
+        </div>
+      </div>
+
+      {/* ================= TYPES ================= */}
+      <div className="max-w-7xl mx-auto py-20 md:py-24 px-5 md:px-6">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-center">
+          Explore Kitchen Styles
+        </h2>
+
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-12">
+          {kitchenTypes.map((item, i) => (
             <div
               key={i}
-              className="min-w-full h-full bg-cover bg-center flex items-center justify-center"
-              style={{ backgroundImage: `url(${slide.image})` }}
+              className="flex flex-col md:flex-row gap-8 bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-500"
             >
-              <div className="text-center bg-white/70 backdrop-blur-sm px-8 py-10 rounded-2xl shadow-xl">
-                <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900">
-                  {slide.title}
-                </h1>
-                <p className="mt-4 text-gray-700 text-lg">
-                  {slide.subtitle}
+              {/* Image */}
+              <div className="md:w-1/2 aspect-4/3 overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105 will-change-transform"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="md:w-1/2 p-7 md:p-8 flex flex-col justify-center">
+                <h3 className="text-2xl font-bold">{item.title}</h3>
+                <p className="mt-3 text-gray-600 leading-relaxed">
+                  {item.desc}
                 </p>
                 <NavLink
                   to="/enquiry"
-                  className="inline-block mt-6 px-8 py-3 rounded-full bg-linear-to-r from-[#d4af37] to-[#b8962e] font-bold text-black hover:scale-105 transition"
+                  className="mt-5 inline-block w-fit px-6 py-3 rounded-full bg-gray-900 text-white transition-transform duration-300 hover:scale-105"
                 >
-                  Book Free Design Consultation
+                  Explore →
                 </NavLink>
               </div>
             </div>
@@ -88,93 +96,102 @@ const Kitchens = () => {
         </div>
       </div>
 
-      {/* ================= INTRO ================= */}
-      <div className="max-w-4xl mx-auto text-center py-20 px-6">
-        <h2 className="text-3xl md:text-4xl font-extrabold">
-          Designed for the Way You Live
-        </h2>
-        <p className="mt-4 text-gray-600 text-lg">
-          At Himasha Builders, we craft kitchens that are visually stunning and
-          enhance your lifestyle with comfort, efficiency and elegance.
-        </p>
-      </div>
-
-      {/* ================= STYLISH KITCHEN TYPES ================= */}
-      {kitchenTypes.map((item, index) => (
-        <div
-          key={index}
-          className={`max-w-6xl mx-auto py-16 px-6 flex flex-col md:flex-row items-center gap-12 ${
-            index % 2 !== 0 ? "md:flex-row-reverse" : ""
-          }`}
-        >
-          <div className="w-full md:w-1/2 overflow-hidden rounded-3xl shadow-xl group">
-            <img
-              src={item.image}
-              alt={item.title}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-90 object-cover group-hover:scale-110 transition duration-700"
-            />
-          </div>
-
-          <div className="w-full md:w-1/2">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900">
-              {item.title}
-            </h3>
-            <p className="mt-4 text-gray-600 leading-relaxed">
-              {item.desc}
-            </p>
-            <NavLink
-              to="/enquiry"
-              className="inline-block mt-6 px-6 py-3 rounded-full bg-black text-white font-semibold hover:scale-105 transition"
-            >
-              Explore Designs →
-            </NavLink>
-          </div>
-        </div>
-      ))}
-
-      {/* ================= EASY LIFE ================= */}
-      <div className="bg-black text-white py-20 px-6">
+      {/* ================= WHY US ================= */}
+      <div className="bg-black text-white py-20 md:py-24 px-6">
         <h2 className="text-3xl md:text-4xl font-extrabold text-center">
-          How Our Kitchens Make Your Life Easier
+          Why Choose Himasha Kitchens
         </h2>
-        <div className="max-w-6xl mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+
+        <div className="max-w-6xl mx-auto mt-14 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
           {[
-            "Smart space utilization",
-            "Effortless cleaning",
-            "Long-lasting materials",
-            "Time-saving workflow",
-            "Energy-efficient layouts",
-            "Premium comfort & safety",
-          ].map((text, i) => (
+            "10+ Years Warranty",
+            "German Hardware",
+            "Factory Precision Finish",
+            "3D Design Preview",
+            "On-Time Delivery",
+            "Transparent Pricing",
+          ].map((item, i) => (
             <div
               key={i}
-              className="bg-neutral-900 p-6 rounded-2xl font-semibold hover:scale-105 transition"
+              className="bg-neutral-900 rounded-2xl p-6 text-center font-semibold transition-transform duration-300 hover:scale-105"
             >
-              ✔ {text}
+              ✔ {item}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ================= COMPARISON ================= */}
+      <div className="py-20 md:py-24 px-6 max-w-6xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-center">
+          Modular Kitchen vs Carpenter Kitchen
+        </h2>
+
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="bg-white shadow-xl rounded-2xl p-8">
+            <h3 className="text-xl font-bold mb-4 text-green-600">
+              Modular Kitchen
+            </h3>
+            <ul className="space-y-3 text-gray-700">
+              <li>✔ Factory finished cabinets</li>
+              <li>✔ Premium hardware fittings</li>
+              <li>✔ Quick installation</li>
+              <li>✔ Long durability</li>
+            </ul>
+          </div>
+
+          <div className="bg-gray-100 shadow-xl rounded-2xl p-8">
+            <h3 className="text-xl font-bold mb-4 text-red-600">
+              Carpenter Kitchen
+            </h3>
+            <ul className="space-y-3 text-gray-700">
+              <li>✖ On-site manual finishing</li>
+              <li>✖ Limited warranty</li>
+              <li>✖ Longer time</li>
+              <li>✖ Uneven quality</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* ================= PROCESS ================= */}
+      <div className="bg-gray-900 text-white py-20 md:py-24 px-6">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-center">
+          Our Kitchen Design Process
+        </h2>
+
+        <div className="max-w-6xl mx-auto mt-14 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+          {["Consult", "Design", "Build", "Deliver"].map((step, i) => (
+            <div
+              key={i}
+              className="bg-neutral-800 rounded-xl p-6 text-center transition-transform duration-300 hover:scale-105"
+            >
+              <div className="text-2xl font-bold text-[#d4af37]">
+                {i + 1}
+              </div>
+              <h4 className="mt-3 font-semibold">{step}</h4>
             </div>
           ))}
         </div>
       </div>
 
       {/* ================= CTA ================= */}
-      <div className="bg-linear-to-r from-[#d4af37] to-[#b8962e] py-20 text-center text-black px-6">
+      <div className="bg-linear-to-r from-[#d4af37] to-[#b8962e] py-16 md:py-20 text-center text-black px-6">
         <h2 className="text-3xl md:text-4xl font-extrabold">
-          Your Dream Kitchen Starts Here
+          Let’s Design Your Dream Kitchen
         </h2>
-        <p className="mt-4 text-lg font-medium">
-          Get expert guidance, transparent pricing and flawless execution.
+        <p className="mt-4 text-lg">
+          Book your free design consultation today
         </p>
         <NavLink
           to="/enquiry"
-          className="inline-block mt-8 px-10 py-4 rounded-full bg-black text-white font-bold hover:scale-110 transition"
+          className="inline-block mt-8 px-10 py-4 rounded-full bg-black text-white font-bold transition-transform duration-300 hover:scale-110"
         >
-          Talk to Our Kitchen Expert
+          Get Free Quote
         </NavLink>
       </div>
     </section>
   );
 };
 
-export default Kitchens;
+export default Kitchen;

@@ -1,170 +1,106 @@
 import { FaArrowRight } from "react-icons/fa";
+import Showcase1 from "../assets/Showcase/showcase1.jpg";
+import Showcase2 from "../assets/Showcase/showcase2.jpg";
+import Showcase3 from "../assets/Showcase/showcase3.jpg";
+import Showcase4 from "../assets/Showcase/showcase4.jpg";
+
+const projects = [
+  {
+    title: "Luxury Living Room",
+    category: "Residential Interior",
+    image: Showcase1,
+  },
+  {
+    title: "Modern Modular Kitchen",
+    category: "Kitchen Design",
+    image: Showcase2,
+  },
+  {
+    title: "Elegant Bedroom Suite",
+    category: "Bedroom Interior",
+    image: Showcase3,
+  },
+  {
+    title: "Premium Office Space",
+    category: "Commercial Interior",
+    image: Showcase4,
+  },
+];
 
 const ProjectsShowcase = () => {
-  const projects = [
-    {
-      title: "Luxury Living Room",
-      category: "Residential Interior",
-      image:
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
-    },
-    {
-      title: "Modern Modular Kitchen",
-      category: "Kitchen Design",
-      image:
-        "https://images.unsplash.com/photo-1556911220-e15b29be8c8f",
-    },
-    {
-      title: "Elegant Bedroom Suite",
-      category: "Bedroom Interior",
-      image:
-        "https://images.unsplash.com/photo-1615873968403-89e068629265",
-    },
-    {
-      title: "Premium Office Space",
-      category: "Commercial Interior",
-      image:
-        "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9",
-    },
-  ];
-
   return (
-    <section
-      style={{
-        padding: "6rem 1.5rem",
-        background: "linear-gradient(180deg, #06080f, #0b0f1a)",
-        color: "#ffffff",
-      }}
-    >
-      {/* 🔹 Section Header */}
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          textAlign: "center",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "clamp(2rem, 3vw, 2.8rem)",
-            fontWeight: 700,
-            letterSpacing: "0.6px",
-          }}
-        >
+    <section className="py-24 px-6 bg-linear-to-b from-[#06080f] to-[#0b0f1a] text-white">
+
+      {/* Header */}
+      <div className="max-w-6xl mx-auto text-center">
+        <h2 className="text-3xl md:text-4xl font-extrabold tracking-wide">
           Luxury Projects Showcase
         </h2>
-
-        <p
-          style={{
-            marginTop: "0.8rem",
-            color: "#d4af37",
-            fontSize: "1.05rem",
-          }}
-        >
+        <p className="mt-3 text-[#d4af37] text-lg">
           A glimpse of our refined craftsmanship
         </p>
       </div>
 
-      {/* 🔹 Projects Grid */}
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "4rem auto 0",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          gap: "2.5rem",
-        }}
-      >
+      {/* Projects Grid */}
+      <div className="max-w-6xl mx-auto mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
         {projects.map((item, i) => (
           <div
             key={i}
-            style={{
-              position: "relative",
-              height: "380px",
-              borderRadius: "22px",
-              overflow: "hidden",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              const overlay = e.currentTarget.querySelector(".overlay");
-              overlay.style.opacity = 1;
-              overlay.style.transform = "translateY(0)";
-            }}
-            onMouseLeave={(e) => {
-              const overlay = e.currentTarget.querySelector(".overlay");
-              overlay.style.opacity = 0;
-              overlay.style.transform = "translateY(20px)";
-            }}
+            className="
+              group relative rounded-3xl overflow-hidden shadow-xl
+              ring-1 ring-[#d4af37]/10
+              hover:ring-[#d4af37]/40
+              transition-all duration-500
+              bg-neutral-900
+            "
           >
-            {/* Image */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `url(${item.image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                transition: "transform 0.6s ease",
-              }}
-            />
+            {/* Aspect Ratio Box (Prevents Layout Shift) */}
+            <div className="relative aspect-3/4 w-full overflow-hidden">
 
-            {/* Dark Gradient */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.85))",
-              }}
-            />
+              {/* Skeleton Loader */}
+              <div className="absolute inset-0 animate-pulse bg-neutral-800" />
 
-            {/* Hover Reveal Content */}
-            <div
-              className="overlay"
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-end",
-                padding: "2.2rem",
-                opacity: 0,
-                transform: "translateY(20px)",
-                transition: "all 0.45s ease",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "0.9rem",
-                  color: "#d4af37",
-                  letterSpacing: "0.6px",
+              {/* Image */}
+              <img
+                src={item.image}
+                alt={item.title}
+                loading="lazy"
+                decoding="async"
+                className="
+                  absolute inset-0 h-full w-full object-cover
+                  transition-transform duration-700
+                  group-hover:scale-110
+                "
+                onLoad={(e) => {
+                  e.currentTarget.previousSibling.style.display = "none";
                 }}
-              >
-                {item.category}
-              </span>
+              />
 
-              <h3
-                style={{
-                  marginTop: "0.5rem",
-                  fontSize: "1.4rem",
-                  fontWeight: 600,
-                }}
-              >
-                {item.title}
-              </h3>
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
 
+              {/* Content */}
               <div
-                style={{
-                  marginTop: "1.2rem",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.6rem",
-                  fontSize: "0.95rem",
-                  color: "#ffffff",
-                  opacity: 0.9,
-                }}
+                className="
+                  absolute inset-0 flex flex-col justify-end
+                  p-6
+                  translate-y-4 opacity-0
+                  transition-all duration-500 ease-out
+                  group-hover:translate-y-0 group-hover:opacity-100
+                "
               >
-                View Project <FaArrowRight />
+                <span className="text-sm tracking-widest text-[#d4af37] uppercase">
+                  {item.category}
+                </span>
+
+                <h3 className="mt-2 text-xl font-semibold tracking-wide">
+                  {item.title}
+                </h3>
+
+                <div className="mt-4 flex items-center gap-2 text-sm text-white/90">
+                  View Project
+                  <FaArrowRight className="transition-transform group-hover:translate-x-1" />
+                </div>
               </div>
             </div>
           </div>

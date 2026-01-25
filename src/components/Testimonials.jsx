@@ -23,67 +23,60 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section
-      style={{
-        padding: "5rem 1.5rem",
-        background: "linear-gradient(180deg,#0b0f1a,#06080f)",
-        color: "#ffffff",
-      }}
-    >
-      {/* 🔹 HEADER */}
-      <div style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
-        <h2
-          style={{
-            fontSize: "clamp(2rem,3vw,2.6rem)",
-            fontWeight: 700,
-          }}
-        >
+    <section className="py-24 px-6 bg-linear-to-b from-[#0b0f1a] to-[#06080f] text-white">
+
+      {/* Header */}
+      <div className="max-w-5xl mx-auto text-center">
+        <h2 className="text-3xl md:text-4xl font-extrabold tracking-wide">
           What Our Clients Say
         </h2>
-
-        <p style={{ marginTop: "0.8rem", color: "#d4af37" }}>
+        <p className="mt-3 text-[#d4af37] text-lg">
           Trusted by homeowners & commercial clients
         </p>
       </div>
 
-      {/* 🔹 TESTIMONIAL CARDS */}
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "4rem auto 0",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
-          gap: "2rem",
-        }}
-      >
+      {/* Testimonials Grid */}
+      <div className="max-w-6xl mx-auto mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
         {testimonials.map((t, i) => (
           <div
             key={i}
-            style={{
-              padding: "2.4rem",
-              borderRadius: "20px",
-              background:
-                "linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))",
-              border: "1px solid rgba(212,175,55,0.25)",
-              backdropFilter: "blur(6px)",
-              boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
-            }}
+            className="
+              group relative rounded-2xl p-10
+              bg-white/5 backdrop-blur-xl
+              border border-[#d4af37]/20
+              shadow-2xl
+              transition-all duration-500
+              hover:-translate-y-2 hover:shadow-[0_30px_60px_rgba(212,175,55,0.25)]
+              will-change-transform
+            "
           >
             {/* Stars */}
-            <div style={{ display: "flex", gap: "6px", marginBottom: "12px" }}>
+            <div className="flex gap-1 mb-5">
               {Array.from({ length: t.rating }).map((_, j) => (
-                <FaStar key={j} color="#d4af37" />
+                <FaStar key={j} className="text-[#d4af37]" />
               ))}
             </div>
 
-            <p style={{ lineHeight: 1.7, opacity: 0.9 }}>{t.text}</p>
+            {/* Text */}
+            <p className="text-gray-300 leading-relaxed">
+              “{t.text}”
+            </p>
 
-            <div style={{ marginTop: "1.5rem" }}>
-              <strong>{t.name}</strong>
-              <div style={{ fontSize: "0.9rem", opacity: 0.8 }}>
+            {/* Client Info */}
+            <div className="mt-8">
+              <strong className="text-white tracking-wide">{t.name}</strong>
+              <div className="text-sm text-gray-400">
                 {t.role}
               </div>
             </div>
+
+            {/* Decorative Glow Line */}
+            <div className="
+              absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-0
+              bg-linear-to-r from-transparent via-[#d4af37] to-transparent
+              transition-all duration-500
+              group-hover:w-3/4
+            " />
           </div>
         ))}
       </div>

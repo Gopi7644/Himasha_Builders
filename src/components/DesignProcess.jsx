@@ -5,133 +5,90 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 
-const DesignProcess = () => {
-  const steps = [
-    {
-      icon: <FaRegHandshake />,
-      title: "Consultation",
-      desc: "Understanding your vision, lifestyle, space & budget",
-    },
-    {
-      icon: <FaDraftingCompass />,
-      title: "Concept & Design",
-      desc: "Premium layouts, 3D designs & curated material selection",
-    },
-    {
-      icon: <FaTools />,
-      title: "Execution",
-      desc: "Flawless execution with skilled craftsmanship",
-    },
-    {
-      icon: <FaCheckCircle />,
-      title: "Final Handover",
-      desc: "Quality checks & elegant finishing touches",
-    },
-  ];
+const steps = [
+  {
+    icon: FaRegHandshake,
+    title: "Consultation",
+    desc: "Understanding your vision, lifestyle, space & budget",
+  },
+  {
+    icon: FaDraftingCompass,
+    title: "Concept & Design",
+    desc: "Premium layouts, 3D designs & curated material selection",
+  },
+  {
+    icon: FaTools,
+    title: "Execution",
+    desc: "Flawless execution with skilled craftsmanship",
+  },
+  {
+    icon: FaCheckCircle,
+    title: "Final Handover",
+    desc: "Quality checks & elegant finishing touches",
+  },
+];
 
+const DesignProcess = () => {
   return (
-    <section
-      style={{
-        padding: "6rem 1.5rem",
-        background: "linear-gradient(180deg, #0b0f1a, #06080f)",
-        color: "#ffffff",
-      }}
-    >
-      {/* 🔹 Header */}
-      <div
-        style={{
-          maxWidth: "1100px",
-          margin: "0 auto",
-          textAlign: "center",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "clamp(2rem, 3vw, 2.8rem)",
-            fontWeight: 700,
-            letterSpacing: "0.6px",
-          }}
-        >
+    <section className="py-24 px-6 bg-linear-to-b from-[#0b0f1a] to-[#06080f] text-white">
+      
+      {/* Header */}
+      <div className="max-w-6xl mx-auto text-center">
+        <h2 className="text-3xl md:text-4xl font-extrabold tracking-wide">
           Our Design Process
         </h2>
-
-        <p
-          style={{
-            marginTop: "0.8rem",
-            color: "#d4af37",
-            fontSize: "1.05rem",
-          }}
-        >
+        <p className="mt-3 text-[#d4af37] text-lg">
           A refined approach to luxury interior design
         </p>
       </div>
 
-      {/* 🔹 Process Cards */}
-      <div
-        style={{
-          maxWidth: "1100px",
-          margin: "4rem auto 0",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "2.5rem",
-        }}
-      >
-        {steps.map((item, i) => (
-          <div
-            key={i}
-            style={{
-              padding: "2.8rem 2.2rem",
-              borderRadius: "20px",
-              background:
-                "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
-              border: "1px solid rgba(212,175,55,0.15)",
-              backdropFilter: "blur(8px)",
-              transition: "all 0.35s ease",
-              textAlign: "center",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = "translateY(-10px)";
-              e.currentTarget.style.boxShadow =
-                "0 25px 50px rgba(212,175,55,0.18)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          >
-            {/* Icon */}
+      {/* Process Cards */}
+      <div className="max-w-6xl mx-auto mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+        {steps.map((item, i) => {
+          const Icon = item.icon;
+          return (
             <div
-              style={{
-                fontSize: "2.6rem",
-                color: "#d4af37",
-                marginBottom: "1.4rem",
-              }}
+              key={i}
+              className="
+                group relative rounded-2xl p-10 text-center
+                bg-white/5 backdrop-blur-lg
+                border border-[#d4af37]/20
+                shadow-xl
+                transition-transform duration-500 ease-out
+                hover:-translate-y-3 hover:shadow-[0_30px_60px_rgba(212,175,55,0.2)]
+              "
             >
-              {item.icon}
+              {/* Icon */}
+              <div className="flex justify-center mb-6">
+                <div className="
+                  text-[#d4af37] text-4xl
+                  transition-transform duration-500
+                  group-hover:scale-110 group-hover:rotate-6
+                ">
+                  <Icon />
+                </div>
+              </div>
+
+              {/* Title */}
+              <h3 className="text-xl font-semibold tracking-wide">
+                {item.title}
+              </h3>
+
+              {/* Description */}
+              <p className="mt-4 text-sm leading-relaxed text-gray-300">
+                {item.desc}
+              </p>
+
+              {/* Glow Line */}
+              <div className="
+                absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5
+                bg-linear-to-r from-transparent via-[#d4af37] to-transparent
+                transition-all duration-500
+                group-hover:w-3/4
+              "></div>
             </div>
-
-            <h3
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: 600,
-                letterSpacing: "0.4px",
-              }}
-            >
-              {item.title}
-            </h3>
-
-            <p
-              style={{
-                marginTop: "0.8rem",
-                fontSize: "0.95rem",
-                lineHeight: 1.7,
-                opacity: 0.9,
-              }}
-            >
-              {item.desc}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

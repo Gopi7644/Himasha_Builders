@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import FloatingForm from "./FloatingForm";
 import { HERO_IMAGES } from "../data/heroImages";
 
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
+  const [showCard, setShowCard] = useState(true);
 
   // 🔁 Background Carousel
   useEffect(() => {
@@ -16,7 +16,16 @@ const HeroSection = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // 🎯 CTA Scroll
+  // 🎬 Animate Glass Card on Slide Change
+  useEffect(() => {
+    setShowCard(false); // hide
+    const timer = setTimeout(() => {
+      setShowCard(true); // show after delay
+    }, 800); // delay before showing again
+
+    return () => clearTimeout(timer);
+  }, [index]);
+
   const scrollToForm = () => {
     const form = document.getElementById("floating-form");
     if (form) {
@@ -25,148 +34,81 @@ const HeroSection = () => {
   };
 
   return (
-    <section
-      style={{
-        position: "relative",
-        minHeight: "100vh",
-        overflow: "hidden",
-      }}
-    >
-      {/* 🌄 Background Images */}
+    <section className="relative min-h-screen overflow-hidden">
+
+      {/* 🌄 Background Slider */}
       {HERO_IMAGES.map((img, i) => (
         <div
-          key={img}
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `url(${img})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: index === i ? 1 : 0,
-            transition: "opacity 1.2s ease-in-out",
-          }}
+          key={i}
+          aria-hidden="true"
+          className={`
+            absolute inset-0 bg-cover bg-center
+            transition-opacity duration-1200 ease-in-out
+            will-change-opacity
+            ${index === i ? "opacity-100" : "opacity-0"}
+          `}
+          style={{ backgroundImage: `url(${img})` }}
         />
       ))}
-      {/* 🌑 Ultra-Premium Gradient Overlay */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.25) 100%)",
-          zIndex: 1,
-        }}
-      />
 
       {/* 🧠 Content Wrapper */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 2,
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "3rem 1.5rem",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "3rem",
-        }}
-      >
-        {/* ⭐ LEFT SIDE — ULTRA-PREMIUM GLASS CONTENT */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 flex flex-col lg:flex-row items-center justify-between gap-14">
+
+        {/* ⭐ Glass Card with Hide/Show Animation */}
         <div
-          style={{
-            maxWidth: "560px",
-            color: "#ffffff",
-            padding: "2.5rem",
-            borderRadius: "18px",
-            background: "rgba(0, 0, 0, 0.38)",
-            backdropFilter: "blur(7px)",
-            WebkitBackdropFilter: "blur(7px)",
-          }}
+          className={`
+            w-full max-w-md
+            bg-black/35 backdrop-blur-sm
+            rounded-xl p-6 sm:p-7
+            text-white shadow-xl
+            border border-white/10
+            transition-all duration-700 ease-in-out
+            will-change-transform will-change-opacity
+            ${
+              showCard
+                ? "opacity-100 translate-y-0 scale-100"
+                : "opacity-0 translate-y-4 scale-95 pointer-events-none"
+            }
+          `}
         >
-          <h1
-            style={{
-              fontSize: "clamp(2.2rem, 4vw, 3.4rem)",
-              fontWeight: 700,
-              lineHeight: 1.2,
-              letterSpacing: "0.5px",
-            }}
-          >
-            Luxury Interior Design <br />
-            Crafted for Elegant Living
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-snug tracking-wide">
+            Luxury Interior Design
           </h1>
 
-          <p
-            style={{
-              marginTop: "0.8rem",
-              fontSize: "1.1rem",
-              color: "#d4af37",
-              letterSpacing: "0.6px",
-            }}
-          >
-            Designing homes that reflect your lifestyle & status
+          <p className="mt-1 text-sm sm:text-base text-[#d4af37] tracking-wide">
+            Crafted for Elegant Living
           </p>
 
-          <ul
-            style={{
-              marginTop: "2rem",
-              listStyle: "none",
-              padding: 0,
-              fontSize: "1rem",
-              lineHeight: 1.9,
-            }}
-          >
+          <ul className="mt-4 space-y-1.5 text-sm sm:text-base leading-relaxed opacity-90">
             <li>✔ Premium Residential & Commercial Interiors</li>
-            <li>✔ Turnkey Execution with Luxury Finishes</li>
-            <li>✔ Transparent Pricing & On-Time Delivery</li>
+            <li>✔ Turnkey Luxury Execution</li>
+            <li>✔ Transparent Pricing</li>
           </ul>
 
+          {/* CTA */}
           <button
             onClick={scrollToForm}
-            style={{
-              marginTop: "2.5rem",
-              padding: "14px 36px",
-              background: "linear-gradient(135deg, #d4af37, #b8962e)",
-              color: "#000",
-              border: "1px solid rgba(0,0,0,0.15)",
-              borderRadius: "30px",
-              fontSize: "1rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              boxShadow: "0 10px 30px rgba(212,175,55,0.35)",
-              transition: "all 0.3s ease",
-            }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.transform = "translateY(-2px)")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.transform = "translateY(0)")
-            }
+            className="
+              mt-5 inline-flex items-center justify-center
+              px-6 py-2.5 rounded-full text-sm font-semibold
+              bg-linear-to-r from-[#d4af37] to-[#b8962e]
+              text-black shadow-md
+              transition-transform duration-300
+              hover:-translate-y-0.5 hover:shadow-lg
+              focus:outline-none focus:ring-2 focus:ring-[#d4af37]/50
+            "
           >
-            Get Free Design Consultation
+            Get Free Consultation
           </button>
 
-          <p
-            style={{
-              marginTop: "1.2rem",
-              fontSize: "0.9rem",
-              opacity: 0.85,
-            }}
-          >
-            Serving Luxury Interiors Across Bihar & Jharkhand
+          <p className="mt-3 text-xs opacity-75">
+            Bihar & Jharkhand
           </p>
         </div>
 
-        {/* 📩 RIGHT SIDE — FORM */}
-        <div
-          id="floating-form"
-          style={{
-            width: "100%",
-            maxWidth: "420px",
-          }}
-        >
-          <FloatingForm />
+        {/* 📩 RIGHT SIDE — FORM PLACEHOLDER */}
+        <div id="floating-form" className="w-full max-w-md">
+          {/* <FloatingForm /> */}
         </div>
       </div>
     </section>

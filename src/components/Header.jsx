@@ -67,9 +67,8 @@ const Header = () => {
               >
                 {menu.title}
                 <FiChevronDown
-                  className={`transition-transform ${
-                    activeMobileMenu === i ? "rotate-180" : ""
-                  }`}
+                  className={`transition-transform ${activeMobileMenu === i ? "rotate-180" : ""
+                    }`}
                 />
               </div>
 
