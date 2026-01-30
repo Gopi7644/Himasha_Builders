@@ -33,19 +33,18 @@ const Footer = () => {
             Premium residential & commercial construction solutions.
           </p>
 
-          {/* 🔥 SOCIAL ICONS */}
           <div
             style={{
-              marginTop: '1.4rem',
-              display: 'flex',
-              gap: '12px',
+              marginTop: "1.4rem",
+              display: "flex",
+              gap: "12px",
             }}
           >
             {[
-              { icon: <FaFacebookF />, link: '#', color: '#1877F2' },
-              { icon: <FaInstagram />, link: '#', color: '#E4405F' },
-              { icon: <FaLinkedinIn />, link: '#', color: '#0A66C2' },
-              { icon: <FaYoutube />, link: '#', color: '#FF0000' },
+              { icon: <FaFacebookF />, link: "#", color: "#1877F2" },
+              { icon: <FaInstagram />, link: "#", color: "#E4405F" },
+              { icon: <FaLinkedinIn />, link: "#", color: "#0A66C2" },
+              { icon: <FaYoutube />, link: "#", color: "#FF0000" },
             ].map((item, i) => (
               <a
                 key={i}
@@ -53,30 +52,29 @@ const Footer = () => {
                 target="_blank"
                 rel="noreferrer"
                 style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(212,175,55,0.35)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: GOLD,
-                  fontSize: '1rem',
-                  boxShadow: '0 6px 18px rgba(212,175,55,0.25)',
-                  transition: 'all .3s ease',
+                  width: "38px",
+                  height: "38px",
+                  borderRadius: "50%",
+                  background: item.color,               // ✅ brand color always
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  boxShadow: `0 6px 18px ${item.color}55`, // ✅ brand color shadow
+                  transition: "all .3s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = item.color
-                  e.currentTarget.style.color = '#fff'
-                  e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)'
-                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)'
+                  e.currentTarget.style.transform =
+                    "translateY(-4px) scale(1.08)";
+                  e.currentTarget.style.boxShadow =
+                    `0 12px 30px ${item.color}99`;        // 🔥 stronger brand shadow
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
-                  e.currentTarget.style.color = GOLD
-                  e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                  e.currentTarget.style.boxShadow = '0 6px 18px rgba(212,175,55,0.25)'
+                  e.currentTarget.style.transform =
+                    "translateY(0) scale(1)";
+                  e.currentTarget.style.boxShadow =
+                    `0 6px 18px ${item.color}55`;
                 }}
               >
                 {item.icon}

@@ -1,35 +1,80 @@
 import { NavLink, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { FiChevronDown } from "react-icons/fi";
 
 const MenuItem = ({ menu }) => {
+  const [open, setOpen] = useState(false);
   const location = useLocation();
 
-  const isActive = location.pathname.startsWith(menu.path);
+  const isParentActive =
+    menu.path !== "/" && location.pathname.startsWith(menu.path);
 
   return (
-    <div className="relative group">
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      {/* PARENT TAB */}
       <NavLink
         to={menu.path}
-        className={`font-medium transition flex items-center gap-1 ${
-          isActive
-            ? "text-[#d4af37]"
-            : "text-gray-200 hover:text-[#d4af37]"
-        }`}
+        className={`
+          relative pb-1 flex items-center gap-1
+          font-medium transition-all duration-300
+          ${open || isParentActive ? "text-[#d4af37]" : "text-white"}
+          after:content-[''] after:absolute after:left-0 after:-bottom-1
+          after:h-0.5 after:w-full after:bg-[#d4af37]
+          after:scale-x-0 after:origin-left after:transition-transform after:duration-300
+          hover:after:scale-x-100
+          ${open || isParentActive ? "after:scale-x-100" : ""}
+        `}
       >
         {menu.title}
+        {menu.items && (
+          <FiChevronDown
+            className={`text-sm mt-0.5 transition-transform duration-300 ${open ? "rotate-180" : ""
+              }`}
+          />
+        )}
       </NavLink>
 
-      {/* Dropdown */}
-      <div className="absolute top-full left-0 mt-4 w-64 bg-[#111827] rounded-xl shadow-xl border border-[#d4af37]/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 z-50">
-        {menu.items.map((item) => (
-          <NavLink
-            key={item.label}
-            to={item.path}
-            className="block px-5 py-3 text-gray-200 hover:bg-[#d4af37] hover:text-black transition font-medium"
-          >
-            {item.label}
-          </NavLink>
-        ))}
-      </div>
+      {/* SUBMENU */}
+      {menu.items && (
+        <div
+          className={`
+            absolute left-0 top-full pt-3
+            transition-opacity duration-200
+            ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+          `}
+        >
+          <div className="flex flex-col gap-2 bg-white px-4 py-3 rounded-md shadow-lg min-w-45">
+            {menu.items.map((item) => (
+              <NavLink
+                key={item.label}
+                to={item.path}
+                className={({ isActive }) =>
+                  `
+    relative px-3 py-2 rounded-md
+    text-sm whitespace-nowrap
+    transition-all duration-300 ease-out
+
+    ${isActive
+                    ? "text-[#8b6f1f] font-medium bg-linear-to-r from-[#fff7db] to-[#f3e3a0]"
+                    : "text-gray-700"
+                  }
+
+    hover:text-[#8b6f1f]
+    hover:bg-linear-to-r hover:from-[#fff7db] hover:to-[#f3e3a0]
+    hover:translate-x-0.5
+    `
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

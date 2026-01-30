@@ -5,7 +5,7 @@ export const MENU = [
     items: [
       { label: "Modular Kitchens", path: "/kitchens/modular" },
       { label: "Kitchen Cost Calculator", path: "/kitchens/calculator" },
-      { label: "Design Ideas", path: "/kitchens/ideas" },
+      { label: "Modular Kitchens Design Ideas", path: "/kitchens/ideas" },
       { label: "Kitchen Configurator", path: "/kitchens/configurator" },
     ],
   },
@@ -52,6 +52,21 @@ export const MENU = [
       { label: "Small Homes", path: "/ideas/small" },
       { label: "Luxury Homes", path: "/ideas/luxury" },
       { label: "Budget Interiors", path: "/ideas/budget" },
+    ],
+  },
+  {
+    title: "Guides",
+    path: "/guides",
+    items: [
+      { label: "Modular Kitchens Guides", path: "/guides/modular" },
+      { label: "Bedroom Design Guides", path: "/guides/bedroom" },
+      { label: "Living Room Design Guides", path: "/guides/livingroom" },
+      { label: "Dining Room Design Guides", path: "/guides/diningroom" },
+      { label: "Kids Room Design Guides", path: "/guides/kidsroom" },
+      { label: "Study Room Design Guides", path: "/guides/studyroom" },
+      { label: "Balcony Design Guides", path: "/guides/balcony" },
+      { label: "Bathroom Design Guides", path: "/guides/bathroom" },
+      { label: "Materials & Finishes", path: "/guides/materials" },
     ],
   },
 ];

@@ -142,7 +142,7 @@ const Kitchen = () => {
 
           <div className="bg-gray-100 shadow-xl rounded-2xl p-8">
             <h3 className="text-xl font-bold mb-4 text-red-600">
-              Carpenter Kitchen
+              Simple Kitchen
             </h3>
             <ul className="space-y-3 text-gray-700">
               <li>✖ On-site manual finishing</li>

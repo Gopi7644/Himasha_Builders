@@ -30,7 +30,6 @@ const projects = [
 const ProjectsShowcase = () => {
   return (
     <section className="py-24 px-6 bg-linear-to-b from-[#06080f] to-[#0b0f1a] text-white">
-
       {/* Header */}
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-extrabold tracking-wide">
@@ -41,66 +40,55 @@ const ProjectsShowcase = () => {
         </p>
       </div>
 
-      {/* Projects Grid */}
-      <div className="max-w-6xl mx-auto mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+      {/* Grid */}
+      <div className="max-w-6xl mx-auto mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {projects.map((item, i) => (
           <div
             key={i}
             className="
-              group relative rounded-3xl overflow-hidden shadow-xl
+              group rounded-2xl overflow-hidden
+              bg-neutral-900
               ring-1 ring-[#d4af37]/10
               hover:ring-[#d4af37]/40
               transition-all duration-500
-              bg-neutral-900
+              shadow-lg hover:shadow-[#d4af37]/20
             "
           >
-            {/* Aspect Ratio Box (Prevents Layout Shift) */}
-            <div className="relative aspect-3/4 w-full overflow-hidden">
-
-              {/* Skeleton Loader */}
-              <div className="absolute inset-0 animate-pulse bg-neutral-800" />
-
-              {/* Image */}
+            {/* Image */}
+            <div className="relative w-full h-60 overflow-hidden">
               <img
                 src={item.image}
                 alt={item.title}
                 loading="lazy"
-                decoding="async"
                 className="
-                  absolute inset-0 h-full w-full object-cover
+                  w-full h-full object-cover
                   transition-transform duration-700
                   group-hover:scale-110
                 "
-                onLoad={(e) => {
-                  e.currentTarget.previousSibling.style.display = "none";
-                }}
               />
+              {/* Soft overlay */}
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition" />
+            </div>
 
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
+            {/* Content Box */}
+            <div
+              className="
+                p-5 bg-[#0f1422]
+                flex flex-col gap-2
+                border-t border-white/5
+              "
+            >
+              <span className="text-xs tracking-widest text-[#d4af37] uppercase">
+                {item.category}
+              </span>
 
-              {/* Content */}
-              <div
-                className="
-                  absolute inset-0 flex flex-col justify-end
-                  p-6
-                  translate-y-4 opacity-0
-                  transition-all duration-500 ease-out
-                  group-hover:translate-y-0 group-hover:opacity-100
-                "
-              >
-                <span className="text-sm tracking-widest text-[#d4af37] uppercase">
-                  {item.category}
-                </span>
+              <h3 className="text-lg font-semibold tracking-wide">
+                {item.title}
+              </h3>
 
-                <h3 className="mt-2 text-xl font-semibold tracking-wide">
-                  {item.title}
-                </h3>
-
-                <div className="mt-4 flex items-center gap-2 text-sm text-white/90">
-                  View Project
-                  <FaArrowRight className="transition-transform group-hover:translate-x-1" />
-                </div>
+              <div className="mt-3 flex items-center gap-2 text-sm text-white/80 group-hover:text-white transition">
+                View Project
+                <FaArrowRight className="transition-transform group-hover:translate-x-1" />
               </div>
             </div>
           </div>

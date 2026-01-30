@@ -1,221 +1,339 @@
-import { useState } from "react";
-import { FiX } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { FiX, FiArrowLeft } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast, Toaster } from "react-hot-toast";
 import OfferImg from "../assets/Offers/interior-offer.png";
 
+/* ================= FLOATING INPUT ================= */
+
+const OutlinedInput = ({
+  label,
+  name,
+  type = "text",
+  placeholder,
+  value,
+  onChange,
+  error,
+}) => {
+  return (
+    <div className="relative">
+      <span
+        className={`absolute -top-2.5 left-3 bg-white px-2 text-xs z-10
+        ${error ? "text-red-500" : "text-gray-600"}`}
+      >
+        {label}
+      </span>
+
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        className={`w-full rounded-lg px-4 py-3 text-sm border outline-none transition
+        ${
+          error
+            ? "border-red-500"
+            : "border-gray-300 focus:border-[#d4af37]"
+        }`}
+      />
+
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+    </div>
+  );
+};
+
+/* ================= MAIN ================= */
+
 const OfferBanner = () => {
-  const [open, setOpen] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [showFormMobile, setShowFormMobile] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState("");
+
   const [form, setForm] = useState({
     location: "",
     name: "",
     phone: "",
   });
+
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
-  if (!open) return null;
+  /* ===== AUTO OPEN ===== */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpen(true);
+    }, 900);
 
-  /* ================= VALIDATION ================= */
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* ===== CHANGE ===== */
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  /* ===== VALIDATE ===== */
   const validateForm = () => {
-    const newErrors = {};
+    const err = {};
+
+    if (!form.location.trim()) err.location = "Enter location";
 
     if (!form.name.trim()) {
-      newErrors.name = "Please enter your name";
+      err.name = "Enter name";
     } else if (!/^[a-zA-Z .]{2,40}$/.test(form.name)) {
-      newErrors.name = "Enter a valid name (letters only)";
+      err.name = "Invalid name";
     }
 
     if (!form.phone.trim()) {
-      newErrors.phone = "Please enter mobile number";
+      err.phone = "Enter mobile";
     } else if (!/^[6-9]\d{9}$/.test(form.phone)) {
-      newErrors.phone = "Enter valid 10-digit mobile number";
+      err.phone = "Invalid number";
     }
 
-    if (!form.location.trim()) {
-      newErrors.location = "Please enter property location";
-    }
+    if (!selectedProperty) err.propertyType = "Select type";
 
-    if (!selectedProperty) {
-      newErrors.propertyType = "Please select property type";
-    }
+    setErrors(err);
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(err).length === 0;
   };
 
-  /* ================= SUBMIT ================= */
-  const handleSubmit = async () => {
+  /* ===== SUBMIT ===== */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     if (!validateForm()) return;
 
     setLoading(true);
-    setMessage("");
+
+    const toastId = toast.loading("Submitting...");
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/offer-enquiry`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          propertyType: selectedProperty,
-        }),
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/offer-enquiry`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...form,
+            propertyType: selectedProperty,
+          }),
+        }
+      );
+
+      if (!res.ok) throw new Error();
+
+      toast.success("🎉 We will contact you shortly!", {
+        id: toastId,
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Submission failed");
-
-      setMessage("✅ Thank you! Our team will contact you shortly.");
       setForm({ location: "", name: "", phone: "" });
       setSelectedProperty("");
-      setErrors({});
-    } catch (err) {
-      setMessage("❌ Server issue. Please try again later.");
+
+      setTimeout(() => {
+        setOpen(false);
+        setShowFormMobile(false);
+      }, 1300);
+
+    } catch {
+      toast.error("Server error. Try again.", {
+        id: toastId,
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  if (!open) return null;
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-end md:items-center justify-center px-3 py-4">
-      <div className="relative w-full max-w-3xl bg-white rounded-xl shadow-xl overflow-hidden">
+    <AnimatePresence>
 
-        {/* CLOSE */}
-        <button
-          onClick={() => setOpen(false)}
-          className="absolute top-3 right-3 z-10 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-pointer"
+      {open && (
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4"
         >
-          <FiX size={20} />
-        </button>
 
-        {/* MOBILE CARD VIEW */}
-        {!showForm && (
-          <div onClick={() => setShowForm(true)} className="md:hidden cursor-pointer">
-            <img src={OfferImg} alt="Offer" className="w-full h-44 object-cover" />
-            <div className="p-4 text-center">
-              <h3 className="font-bold text-lg">Free Interior Consultation</h3>
-              <p className="text-sm text-gray-600 mt-1">
-                Tap to book your free design session
-              </p>
-            </div>
-          </div>
-        )}
+          {/* CENTER TOAST */}
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "#111827",
+                color: "#fff",
+                padding: "14px 22px",
+                borderRadius: "10px",
+                fontSize: "14px",
+                textAlign: "center",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.25)",
+              },
+            }}
+            containerStyle={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 9999,
+            }}
+          />
 
-        {/* DESKTOP */}
-        <div className="hidden md:grid grid-cols-2">
-          <img src={OfferImg} alt="Offer" className="w-full h-full object-cover" />
-          {renderForm()}
-        </div>
-
-        {/* MOBILE FORM */}
-        {showForm && <div className="md:hidden">{renderForm()}</div>}
-      </div>
-    </div>
-  );
-
-  function renderForm() {
-    return (
-      <div className="p-5 md:p-7 flex flex-col justify-center">
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900">
-          Get Free Design Consultation
-        </h2>
-        <p className="text-gray-600 text-sm mt-1 mb-4">
-          Talk to our interior experts today
-        </p>
-
-        {/* PROPERTY TYPE */}
-        <div className="mb-4">
-          <p className="text-sm font-semibold mb-2">
-            Select Property Type <span className="text-red-500">*</span>
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {["1 BHK", "2 BHK", "3 BHK", "4+ BHK"].map((type) => (
-              <button
-                key={type}
-                onClick={() => setSelectedProperty(type)}
-                className={`px-3 py-1.5 rounded-full text-xs border transition ${
-                  selectedProperty === type
-                    ? "bg-[#d4af37] text-black border-[#d4af37]"
-                    : "border-gray-300 text-gray-700 hover:bg-[#d4af37] hover:text-black"
-                }`}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-          {errors.propertyType && (
-            <p className="text-red-500 text-xs mt-1">{errors.propertyType}</p>
-          )}
-        </div>
-
-        {/* INPUTS */}
-        <div className="space-y-3">
-          <div>
-            <input
-              type="text"
-              placeholder="Property Location *"
-              value={form.location}
-              onChange={(e) => setForm({ ...form, location: e.target.value })}
-              className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[#d4af37]"
-            />
-            {errors.location && (
-              <p className="text-red-500 text-xs mt-1">{errors.location}</p>
-            )}
-          </div>
-
-          <div>
-            <input
-              type="text"
-              placeholder="Your Name *"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[#d4af37]"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-            )}
-          </div>
-
-          <div>
-            <input
-              type="tel"
-              placeholder="Mobile Number *"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[#d4af37]"
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
-            )}
-          </div>
-        </div>
-
-        {/* MESSAGE */}
-        {message && (
-          <p
-            className={`mt-3 text-sm ${
-              message.includes("Thank") ? "text-green-600" : "text-red-600"
-            }`}
+          {/* CARD */}
+          <motion.div
+            initial={{ scale: 0.9, y: 50 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 50 }}
+            transition={{ duration: 0.3 }}
+            className="relative w-full max-w-xl bg-white rounded-xl shadow-2xl overflow-hidden"
           >
-            {message}
-          </p>
-        )}
 
-        {/* CTA */}
-        <button
-          disabled={loading}
-          onClick={handleSubmit}
-          className="mt-4 bg-[#9e1b1b] hover:bg-[#7f1414] text-white py-2.5 rounded-md font-semibold text-sm transition disabled:opacity-50 cursor-pointer"
-        >
-          {loading ? "Submitting..." : "Book Free Consultation"}
-        </button>
+            {/* CLOSE */}
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute top-3 right-3 z-20 bg-white rounded-full p-1 shadow"
+            >
+              <FiX size={20} />
+            </button>
 
-        <p className="text-[11px] text-gray-500 mt-2">
-          * indicates mandatory fields
-        </p>
-      </div>
-    );
-  }
+            <div className="grid grid-cols-1 md:grid-cols-2">
+
+              {/* IMAGE */}
+              <div
+                className={`cursor-pointer ${
+                  showFormMobile ? "hidden md:block" : "block"
+                }`}
+                onClick={() => setShowFormMobile(true)}
+              >
+                <img
+                  src={OfferImg}
+                  alt="Offer"
+                  className="w-full h-64 md:h-full object-cover"
+                />
+              </div>
+
+              {/* FORM */}
+              <div
+                className={`p-5 md:p-6 flex flex-col justify-center
+                ${showFormMobile ? "block" : "hidden md:block"}`}
+              >
+
+                {/* MOBILE BACK */}
+                {showFormMobile && (
+                  <button
+                    onClick={() => setShowFormMobile(false)}
+                    className="md:hidden flex items-center gap-1 text-sm mb-3 text-gray-600"
+                  >
+                    <FiArrowLeft /> Back
+                  </button>
+                )}
+
+                <h2 className="text-lg font-bold text-gray-900">
+                  Free Design Consultation
+                </h2>
+
+                <p className="text-gray-600 text-sm mb-4">
+                  Get expert guidance for your home
+                </p>
+
+                <form onSubmit={handleSubmit}>
+
+                  {/* PROPERTY TYPE */}
+                  <div className="mb-4">
+
+                    <p className="text-sm font-semibold mb-2">
+                      Property Type *
+                    </p>
+
+                    <div className="flex gap-2 flex-nowrap">
+
+                      {["1 BHK", "2 BHK", "3 BHK", "4+ BHK"].map((type) => (
+                        <button
+                          type="button"
+                          key={type}
+                          onClick={() => {
+                            setSelectedProperty(type);
+                            setErrors({});
+                          }}
+                          className={`px-3 py-1.5 rounded-full text-xs border transition whitespace-nowrap
+                          ${
+                            selectedProperty === type
+                              ? "bg-[#d4af37] border-[#d4af37]"
+                              : "border-gray-300 hover:bg-[#fff3c4]"
+                          }`}
+                        >
+                          {type}
+                        </button>
+                      ))}
+
+                    </div>
+
+                    {errors.propertyType && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.propertyType}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* INPUTS */}
+                  <div className="space-y-4">
+
+                    <OutlinedInput
+                      label="Location"
+                      name="location"
+                      placeholder="Enter property location"
+                      value={form.location}
+                      onChange={handleChange}
+                      error={errors.location}
+                    />
+
+                    <OutlinedInput
+                      label="Name"
+                      name="name"
+                      placeholder="Your full name"
+                      value={form.name}
+                      onChange={handleChange}
+                      error={errors.name}
+                    />
+
+                    <OutlinedInput
+                      label="Phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="10 digit mobile number"
+                      value={form.phone}
+                      onChange={handleChange}
+                      error={errors.phone}
+                    />
+
+                  </div>
+
+                  {/* SUBMIT */}
+                  <button
+                    disabled={loading}
+                    type="submit"
+                    className="mt-5 w-full bg-[#9e1b1b] hover:bg-[#7f1414]
+                    text-white py-2.5 rounded-md font-semibold transition
+                    disabled:opacity-70"
+                  >
+                    {loading ? "Submitting..." : "Submit"}
+                  </button>
+
+                </form>
+              </div>
+
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+    </AnimatePresence>
+  );
 };
 
 export default OfferBanner;

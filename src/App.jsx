@@ -32,6 +32,8 @@ import DecorativeLights from "./components/Lights/DecorativeLights.jsx";
 import SmallHomes from "./components/DesignIdeas/SmallHomes.jsx";
 import LuxuryHomes from "./components/DesignIdeas/LuxuryHomes.jsx";
 import BudgetInteriors from "./components/DesignIdeas/BudgetInteriors.jsx";
+import Guides from "./components/Guides/Guides.jsx";
+
 
 const Router = createBrowserRouter([
   {
@@ -158,6 +160,10 @@ const Router = createBrowserRouter([
       {
         path: "/ideas/budget",          // "/ideas/budget"
         element: <BudgetInteriors />,
+      },
+      {
+        path: "guides",          // "/ideas/budget"
+        element: <Guides />,
       },
     ],
   },

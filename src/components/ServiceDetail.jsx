@@ -1,4 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import FormPopup from "./FormPopup";
+import { FiX, FiArrowLeft } from "react-icons/fi";
 
 const SERVICE_DETAILS = {
   kitchens: {
@@ -12,7 +15,6 @@ const SERVICE_DETAILS = {
     ],
     image: "/src/assets/ServicesCards/kitchen.jpg",
   },
-
   doors: {
     title: "Designer Doors & Windows",
     desc: "High-quality doors and windows designed for security, elegance and ventilation.",
@@ -24,7 +26,6 @@ const SERVICE_DETAILS = {
     ],
     image: "/src/assets/ServicesCards/doors.jpg",
   },
-
   furniture: {
     title: "Designer Furniture",
     desc: "Handcrafted luxury furniture that enhances aesthetics & comfort.",
@@ -36,7 +37,6 @@ const SERVICE_DETAILS = {
     ],
     image: "/src/assets/ServicesCards/furniture.jpg",
   },
-
   furnishings: {
     title: "Premium Furnishings",
     desc: "Elegant furnishing solutions that bring warmth and character to your home.",
@@ -48,7 +48,6 @@ const SERVICE_DETAILS = {
     ],
     image: "/src/assets/ServicesCards/furnishings.jpg",
   },
-
   wardrobes: {
     title: "Luxury Wardrobes",
     desc: "Modern wardrobes designed for maximum storage and stylish interiors.",
@@ -60,7 +59,6 @@ const SERVICE_DETAILS = {
     ],
     image: "/src/assets/ServicesCards/wardrobe.jpg",
   },
-
   bathware: {
     title: "Premium Bathware",
     desc: "Modern bathware designs with elegant fixtures and waterproof finish.",
@@ -72,7 +70,6 @@ const SERVICE_DETAILS = {
     ],
     image: "/src/assets/ServicesCards/bath.jpg",
   },
-
   lights: {
     title: "Luxury Lighting Solutions",
     desc: "Decorative and functional lighting systems to elevate ambience.",
@@ -84,7 +81,6 @@ const SERVICE_DETAILS = {
     ],
     image: "/src/assets/ServicesCards/lights.jpg",
   },
-
   rugs: {
     title: "Designer Rugs & Carpets",
     desc: "Premium rugs and carpets that enhance comfort and aesthetics.",
@@ -100,6 +96,8 @@ const SERVICE_DETAILS = {
 
 const ServiceDetail = () => {
   const { type } = useParams();
+  const navigate = useNavigate();
+  const [showForm, setShowForm] = useState(false);
   const data = SERVICE_DETAILS[type];
 
   if (!data)
@@ -116,8 +114,48 @@ const ServiceDetail = () => {
         background: "#06080f",
         color: "#fff",
         minHeight: "100vh",
+        position: "relative",
       }}
     >
+      {/* 🔙 Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        style={{
+          position: "absolute",
+          top: 24,
+          left: 24,
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          background: "transparent",
+          border: "1px solid rgba(212,175,55,.4)",
+          color: "#d4af37",
+          padding: "8px 14px",
+          borderRadius: 10,
+          cursor: "pointer",
+        }}
+      >
+        <FiArrowLeft /> Back
+      </button>
+
+      {/* ❌ Close Button */}
+      <button
+        onClick={() => navigate(-1)}
+        style={{
+          position: "absolute",
+          top: 24,
+          right: 24,
+          background: "transparent",
+          border: "1px solid rgba(212,175,55,.4)",
+          color: "#d4af37",
+          padding: 8,
+          borderRadius: "50%",
+          cursor: "pointer",
+        }}
+      >
+        <FiX size={18} />
+      </button>
+
       <div
         style={{
           maxWidth: 1200,
@@ -157,6 +195,7 @@ const ServiceDetail = () => {
           </ul>
 
           <button
+            onClick={() => setShowForm(true)}
             style={{
               marginTop: "2rem",
               padding: "0.9rem 2.2rem",
@@ -173,6 +212,7 @@ const ServiceDetail = () => {
           </button>
         </div>
       </div>
+      <FormPopup isOpen={showForm} onClose={() => setShowForm(false)} />
     </section>
   );
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/logo-hb.jpeg";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import { MENU } from "./menuData.js";
@@ -8,13 +8,30 @@ import MenuItem from "./MenuItem";
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeMobileMenu, setActiveMobileMenu] = useState(null);
+    const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+
+    if (location.pathname === "/") {
+      // already on home → just scroll
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    } else {
+      // go home
+      navigate("/");
+    }
+  }; 
 
   return (
     <header className="sticky top-0 z-50 bg-[#0b0f1a] border-b border-[#d4af37]/30">
 
       {/* DESKTOP */}
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <NavLink to="/" className="flex items-center gap-3">
+        <NavLink to="/" onClick={handleLogoClick} className="flex items-center gap-3">
           <img src={logo} alt="Logo" className="w-12 h-12 rounded-full border-2 border-[#d4af37]" />
           <div>
             <div className="text-lg font-extrabold text-white">
@@ -33,10 +50,10 @@ const Header = () => {
         </nav>
 
         <NavLink
-          to="/enquiry"
+          to="#"
           className="hidden md:inline-block bg-linear-to-r from-[#d4af37] to-[#b8962e] text-black px-5 py-2 rounded-lg font-bold"
         >
-          Book Appointment
+          Get Quote
         </NavLink>
 
         <button
@@ -88,6 +105,20 @@ const Header = () => {
               )}
             </div>
           ))}
+          <button
+            className="
+            w-full mt-6 px-6 py-3 rounded-xl
+            font-bold tracking-wide
+          text-black text-sm sm:text-base
+            bg-linear-to-r from-[#d4af37] to-[#b8962e]
+            shadow-md shadow-yellow-400/30
+            transition-all duration-300 ease-out
+            hover:-translate-y-0.5 hover:shadow-lg hover:shadow-yellow-400/50
+            active:scale-[0.98]
+            focus:outline-none focus:ring-2 focus:ring-[#d4af37]/50"
+          >
+            Get Quote
+          </button>
         </div>
       )}
     </header>
