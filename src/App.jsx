@@ -17,9 +17,6 @@ import ModularKitchens from "./components/Kitchen/ModularKitchens.jsx";
 import KitchenCalculator from "./components/Kitchen/KitchenCalculator.jsx";
 import DesignIdeas from "./components/Kitchen/DesignIdeas.jsx";
 import KitchenConfigurator from "./components/Kitchen/KitchenConfigurator.jsx";
-import SlidingWard from "./components/Wardrobes/SlidingWard.jsx";
-import WalkInWard from "./components/Wardrobes/WalkInWard.jsx";
-import LuxaryClosets from "./components/Wardrobes/LuxaryClosets.jsx";
 import MainDoor from "./components/DoorWindows/MainDoor.jsx";
 import Windows from "./components/DoorWindows/Windows.jsx";
 import BalconyDoors from "./components/DoorWindows/BalconyDoors.jsx";
@@ -33,6 +30,7 @@ import SmallHomes from "./components/DesignIdeas/SmallHomes.jsx";
 import LuxuryHomes from "./components/DesignIdeas/LuxuryHomes.jsx";
 import BudgetInteriors from "./components/DesignIdeas/BudgetInteriors.jsx";
 import Guides from "./components/Guides/Guides.jsx";
+import ModularWardrobes from "./components/Wardrobes/ModularWardrobes.jsx";
 
 
 const Router = createBrowserRouter([
@@ -102,16 +100,8 @@ const Router = createBrowserRouter([
         element: <KitchenConfigurator />,
       },
       {
-        path: "/wardrobes/sliding",          // "/wardrobes/sliding"
-        element: <SlidingWard />,
-      },
-      {
-        path: "/wardrobes/walkin",          // "/wardrobes/walkin"
-        element: <WalkInWard />,
-      },
-      {
-        path: "/wardrobes/luxury",          // "/wardrobes/luxury"
-        element: <LuxaryClosets />,
+        path: "/wardrobes/modular",          // "/wardrobes/modular"
+        element: <ModularWardrobes />,
       },
       {
         path: "/doors/main",          // "/doors/main"

@@ -5,6 +5,7 @@ import {
   FaMapMarkerAlt,
   FaCheckCircle,
 } from "react-icons/fa";
+import { toast, Toaster } from "react-hot-toast";
 
 const Enquiry = () => {
   const [form, setForm] = useState({
@@ -15,53 +16,78 @@ const Enquiry = () => {
     message: "",
   });
 
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [error, setError] = useState("");
 
-  // ✅ Validation
+  /* ================= VALIDATION ================= */
   const validate = () => {
-    if (form.name.trim().length < 2) return "Please enter valid name";
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) return "Enter valid email address";
+    const newErrors = {};
+
+    if (form.name.trim().length < 2)
+      newErrors.name = "Enter valid name";
+
+    if (!/^\S+@\S+\.\S+$/.test(form.email))
+      newErrors.email = "Enter valid email";
+
     if (!/^[6-9]\d{9}$/.test(form.phone))
-      return "Enter valid 10-digit mobile number";
-    if (!form.service) return "Please select service";
-    if (form.message.trim().length < 5) return "Enter brief message";
-    return null;
+      newErrors.phone = "Enter valid mobile";
+
+    if (!form.service)
+      newErrors.service = "Select service";
+
+    if (form.message.trim().length < 5)
+      newErrors.message = "Enter minimum 5 characters";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
+  /* ================= CHANGE ================= */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+
+    setErrors((prev) => ({
+      ...prev,
+      [e.target.name]: "",
+    }));
   };
 
-  // ✅ Proper backend response handling
+  /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
-    const validationError = validate();
-    if (validationError) {
-      setError(validationError);
+    if (!validate()) {
+      toast.error("❌ Please fix form errors");
       return;
     }
 
     setLoading(true);
 
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/enquiry`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
+    const toastId = toast.loading("Submitting...");
 
-      if (!res.ok) throw new Error("Server error");
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/enquiry`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
+
+      if (!res.ok) throw new Error();
 
       const data = await res.json();
 
       if (data.success) {
+        toast.success("🎉 Submitted Successfully!", {
+          id: toastId,
+        });
+
         setShowSuccess(true);
+
         setForm({
           name: "",
           email: "",
@@ -69,25 +95,49 @@ const Enquiry = () => {
           service: "",
           message: "",
         });
-        setTimeout(() => setShowSuccess(false), 3000);
+
+        setTimeout(() => setShowSuccess(false), 2500);
       } else {
-        throw new Error("Submission failed");
+        throw new Error();
       }
-    } catch (err) {
-      console.error(err);
-      setError("Server issue. Please try again shortly.");
+
+    } catch {
+      toast.error("⚠️ Server error. Try again.", {
+        id: toastId,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="min-h-screen py-20 px-6 bg-linear-to-b from-[#06080f] to-[#0b0f1a] text-white">
+    <section className="min-h-screen py-20 px-6 bg-linear-to-b from-[#06080f] to-[#0b0f1a] text-white relative">
+
+      {/* CENTER TOAST */}
+      <Toaster
+        position="top-center"
+        containerStyle={{
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+        toastOptions={{
+          style: {
+            background: "#111827",
+            color: "#fff",
+            padding: "14px 20px",
+            borderRadius: "10px",
+            textAlign: "center",
+          },
+        }}
+      />
+
       {/* HEADER */}
       <div className="max-w-6xl mx-auto text-center">
         <h1 className="text-3xl md:text-4xl font-extrabold">
           Request a Free Consultation
         </h1>
+
         <p className="mt-3 text-[#d4af37]">
           Let’s design something beautiful together
         </p>
@@ -95,9 +145,13 @@ const Enquiry = () => {
 
       {/* CONTENT */}
       <div className="max-w-6xl mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 gap-14">
-        {/* LEFT SIDE INFO */}
+
+        {/* LEFT INFO */}
         <div className="p-10 rounded-3xl bg-white/5 backdrop-blur border border-[#d4af37]/30 shadow-2xl">
-          <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
+
+          <h2 className="text-2xl font-semibold mb-6">
+            Contact Information
+          </h2>
 
           <div className="flex items-center gap-4 mb-5">
             <FaPhoneAlt className="text-[#d4af37]" />
@@ -106,25 +160,23 @@ const Enquiry = () => {
 
           <div className="flex items-center gap-4 mb-5">
             <FaEnvelope className="text-[#d4af37]" />
-            <a href="mailto:info@himashabuilders.com">
-              info@himashabuilders.com
-            </a>
+            info@himashabuilders.com
           </div>
 
           <div className="flex items-start gap-4 mb-8">
             <FaMapMarkerAlt className="text-[#d4af37] mt-1" />
             <p>
-              RK Puram Near Peepal Tree Chowk,<br />
+              RK Puram Near Peepal Tree Chowk,
+              <br />
               Saguna, Danapur, Patna
             </p>
           </div>
 
           <p className="text-gray-300 leading-relaxed">
-            Share your requirements with us and our design experts will get in
-            touch with you shortly for a personalized consultation.
+            Our design experts will contact you shortly.
           </p>
 
-          {/* MAP */}
+          {/* MAP (UNCHANGED) */}
           <div className="mt-10 rounded-xl overflow-hidden border border-[#d4af37]/20">
             <iframe
               title="Google Map"
@@ -135,94 +187,162 @@ const Enquiry = () => {
           </div>
         </div>
 
-        {/* RIGHT SIDE FORM */}
+        {/* RIGHT FORM */}
         <form
           onSubmit={handleSubmit}
           className="p-10 rounded-3xl bg-white/5 backdrop-blur border border-[#d4af37]/30 shadow-2xl space-y-5"
         >
-          <h2 className="text-xl font-semibold">Send Us Your Requirements</h2>
+
+          <h2 className="text-xl font-semibold">
+            Send Your Requirements
+          </h2>
+
           <p className="text-sm text-gray-400 mb-3">
             Our experts will contact you shortly
           </p>
 
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#d4af37] outline-none"
-          />
+          {/* NAME */}
+          <div>
+            <input
+              name="name"
+              placeholder="Full Name"
+              value={form.name}
+              onChange={handleChange}
+              className="input"
+            />
+            {errors.name && (
+              <p className="error">{errors.name}</p>
+            )}
+          </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#d4af37] outline-none"
-          />
+          {/* EMAIL */}
+          <div>
+            <input
+              name="email"
+              placeholder="Email Address"
+              value={form.email}
+              onChange={handleChange}
+              className="input"
+            />
+            {errors.email && (
+              <p className="error">{errors.email}</p>
+            )}
+          </div>
 
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone Number"
-            value={form.phone}
-            onChange={handleChange}
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#d4af37] outline-none"
-          />
+          {/* PHONE */}
+          <div>
+            <input
+              name="phone"
+              placeholder="Phone Number"
+              value={form.phone}
+              onChange={handleChange}
+              className="input"
+            />
+            {errors.phone && (
+              <p className="error">{errors.phone}</p>
+            )}
+          </div>
 
-          <select
-            name="service"
-            value={form.service}
-            onChange={handleChange}
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-[#d4af37] outline-none"
-          >
-            <option value="">Select Service</option>
-            <option value="Flat">Flat Interior</option>
-            <option value="Interior">Home Interior</option>
-            <option value="Marriage">Marriage Hall</option>
-            <option value="Shop">Shop Design</option>
-          </select>
+          {/* SERVICE */}
+          <div>
+            <select
+              name="service"
+              value={form.service}
+              onChange={handleChange}
+              className="input"
+            >
+              <option value="">Select Service</option>
+              <option>Flat Interior</option>
+              <option>Home Interior</option>
+              <option>Marriage Hall</option>
+              <option>Shop Design</option>
+            </select>
 
-          <textarea
-            name="message"
-            rows="4"
-            placeholder="Tell us about your project"
-            value={form.message}
-            onChange={handleChange}
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#d4af37] outline-none resize-none"
-          />
+            {errors.service && (
+              <p className="error">{errors.service}</p>
+            )}
+          </div>
 
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {/* MESSAGE */}
+          <div>
+            <textarea
+              name="message"
+              rows="4"
+              placeholder="Tell us about project"
+              value={form.message}
+              onChange={handleChange}
+              className="input resize-none"
+            />
 
+            {errors.message && (
+              <p className="error">{errors.message}</p>
+            )}
+          </div>
+
+          {/* BUTTON */}
           <button
-            type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-lg font-semibold transition ${
+            type="submit"
+            className={`w-full py-3 rounded-lg font-semibold transition
+            ${
               loading
-                ? "bg-gray-600 cursor-not-allowed"
+                ? "bg-gray-600"
                 : "bg-linear-to-r from-[#d4af37] to-[#b8962e] text-black hover:scale-[1.02]"
             }`}
           >
             {loading ? "Submitting..." : "Submit Enquiry"}
           </button>
-          
+
         </form>
       </div>
 
       {/* SUCCESS MODAL */}
       {showSuccess && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+
           <div className="bg-white/10 backdrop-blur p-10 rounded-2xl border border-[#d4af37]/40 text-center shadow-2xl">
-            <FaCheckCircle size={64} className="text-[#d4af37] mx-auto mb-4" />
-            <h2 className="text-xl font-semibold">Thank You!</h2>
+
+            <FaCheckCircle
+              size={64}
+              className="text-[#d4af37] mx-auto mb-4"
+            />
+
+            <h2 className="text-xl font-semibold">
+              Thank You!
+            </h2>
+
             <p className="mt-2 text-gray-300">
-              Our team will contact you shortly.
+              We will contact you shortly.
             </p>
+
           </div>
         </div>
       )}
+
+      {/* REUSABLE STYLES */}
+      <style>{`
+        .input {
+          width: 100%;
+          background: rgba(0,0,0,0.4);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 8px;
+          padding: 12px 14px;
+          color: white;
+          outline: none;
+        }
+
+        .input:focus {
+          border-color: #d4af37;
+          box-shadow: 0 0 0 1px #d4af37;
+        }
+
+        .error {
+          font-size: 12px;
+          color: #f87171;
+          margin-top: 4px;
+        }
+      `}</style>
+
     </section>
   );
 };

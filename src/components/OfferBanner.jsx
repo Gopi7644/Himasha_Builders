@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { FiX, FiArrowLeft } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast, Toaster } from "react-hot-toast";
-import OfferImg from "../assets/Offers/interior-offer.png";
+
+import OfferImg from "../assets/Offers/holi.png";
 
 /* ================= FLOATING INPUT ================= */
 
@@ -68,7 +69,7 @@ const OfferBanner = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  /* ===== CHANGE ===== */
+  /* ===== HANDLE CHANGE ===== */
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -76,7 +77,7 @@ const OfferBanner = () => {
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  /* ===== VALIDATE ===== */
+  /* ===== VALIDATION ===== */
   const validateForm = () => {
     const err = {};
 
@@ -196,25 +197,34 @@ const OfferBanner = () => {
             {/* CLOSE */}
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-3 right-3 z-20 bg-white rounded-full p-1 shadow"
+              className="absolute top-3 right-3 z-20 bg-white rounded-full p-1 shadow cursor-pointer"
             >
               <FiX size={20} />
             </button>
 
             <div className="grid grid-cols-1 md:grid-cols-2">
 
-              {/* IMAGE */}
+              {/* IMAGE (FULL RESPONSIVE FIXED) */}
               <div
-                className={`cursor-pointer ${
-                  showFormMobile ? "hidden md:block" : "block"
-                }`}
+                className={`cursor-pointer flex items-center justify-center bg-black
+                ${showFormMobile ? "hidden md:flex" : "flex"}`}
                 onClick={() => setShowFormMobile(true)}
               >
+
                 <img
                   src={OfferImg}
                   alt="Offer"
-                  className="w-full h-64 md:h-full object-cover"
+                  className="
+                    w-full
+                    h-auto
+                    max-h-[80vh]
+                    md:h-full
+                    md:max-h-full
+                    object-contain
+                    transition
+                  "
                 />
+
               </div>
 
               {/* FORM */}
@@ -250,9 +260,9 @@ const OfferBanner = () => {
                       Property Type *
                     </p>
 
-                    <div className="flex gap-2 flex-nowrap">
+                    <div className="flex gap-1 flex-nowrap">
 
-                      {["1 BHK", "2 BHK", "3 BHK", "4+ BHK"].map((type) => (
+                      {["1 BHK", "2 BHK", "3 BHK", "4+ BHK/Duplex"].map((type) => (
                         <button
                           type="button"
                           key={type}
@@ -260,7 +270,7 @@ const OfferBanner = () => {
                             setSelectedProperty(type);
                             setErrors({});
                           }}
-                          className={`px-3 py-1.5 rounded-full text-xs border transition whitespace-nowrap
+                          className={`px-2 py-1.5 rounded-full text-xs border transition whitespace-nowrap cursor-pointer
                           ${
                             selectedProperty === type
                               ? "bg-[#d4af37] border-[#d4af37]"
@@ -319,7 +329,7 @@ const OfferBanner = () => {
                     type="submit"
                     className="mt-5 w-full bg-[#9e1b1b] hover:bg-[#7f1414]
                     text-white py-2.5 rounded-md font-semibold transition
-                    disabled:opacity-70"
+                    disabled:opacity-70 cursor-pointer"
                   >
                     {loading ? "Submitting..." : "Submit"}
                   </button>

@@ -13,9 +13,8 @@ export const MENU = [
     title: "Wardrobes",
     path: "/wardrobes",
     items: [
-      { label: "Sliding Wardrobes", path: "/wardrobes/sliding" },
-      { label: "Walk-in Wardrobes", path: "/wardrobes/walkin" },
-      { label: "Luxury Closets", path: "/wardrobes/luxury" },
+      { label: "Modular Wardrobes", path: "/wardrobes/modular" },
+      { label: "Wardrobes Cost Calculator", path: "/wardrobes/walkin" },
     ],
   },
   {

@@ -34,11 +34,8 @@ const Wardrobes = () => {
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 text-center text-white px-6">
           <h1 className="text-4xl md:text-5xl font-extrabold">
-            Sleek Wardrobes
-          </h1>
-          <p className="mt-3 text-lg md:text-xl opacity-90">
             Designed for style, space & elegance
-          </p>
+          </h1>
         </div>
       </div>
 
