@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { FiX, FiArrowLeft } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 import OfferImg from "../assets/Offers/holi.png";
 
-/* ================= FLOATING INPUT ================= */
+/* ================= INPUT ================= */
 
 const OutlinedInput = ({
   label,
@@ -17,7 +17,8 @@ const OutlinedInput = ({
   error,
 }) => {
   return (
-    <div className="relative">
+    <div className="relative w-full">
+
       <span
         className={`absolute -top-2.5 left-3 bg-white px-2 text-xs z-10
         ${error ? "text-red-500" : "text-gray-600"}`}
@@ -31,7 +32,7 @@ const OutlinedInput = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className={`w-full rounded-lg px-4 py-3 text-sm border outline-none transition
+        className={`w-full rounded-lg px-4 py-3 text-sm border outline-none
         ${
           error
             ? "border-red-500"
@@ -39,7 +40,10 @@ const OutlinedInput = ({
         }`}
       />
 
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && (
+        <p className="text-red-500 text-xs mt-1">{error}</p>
+      )}
+
     </div>
   );
 };
@@ -47,20 +51,22 @@ const OutlinedInput = ({
 /* ================= MAIN ================= */
 
 const OfferBanner = () => {
+
   const [open, setOpen] = useState(false);
   const [showFormMobile, setShowFormMobile] = useState(false);
-  const [selectedProperty, setSelectedProperty] = useState("");
 
   const [form, setForm] = useState({
     location: "",
     name: "",
     phone: "",
+    propertyType: "", // ✅ inside form
   });
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  /* ===== AUTO OPEN ===== */
+  /* ================= AUTO OPEN ================= */
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setOpen(true);
@@ -69,41 +75,76 @@ const OfferBanner = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  /* ===== HANDLE CHANGE ===== */
+  /* ================= CHANGE ================= */
+
   const handleChange = (e) => {
+
     const { name, value } = e.target;
 
-    setForm((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
-  /* ===== VALIDATION ===== */
+  /* ================= PROPERTY CHANGE ================= */
+
+  const handlePropertySelect = (type) => {
+
+    setForm((prev) => ({
+      ...prev,
+      propertyType: type,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      propertyType: "",
+    }));
+  };
+
+  /* ================= VALIDATION ================= */
+
   const validateForm = () => {
+
     const err = {};
 
-    if (!form.location.trim()) err.location = "Enter location";
+    if (!form.location.trim()) {
+      err.location = "Enter location";
+    }
 
     if (!form.name.trim()) {
       err.name = "Enter name";
-    } else if (!/^[a-zA-Z .]{2,40}$/.test(form.name)) {
+    } 
+    else if (!/^[a-zA-Z .]{2,40}$/.test(form.name)) {
       err.name = "Invalid name";
     }
 
     if (!form.phone.trim()) {
-      err.phone = "Enter mobile";
-    } else if (!/^[6-9]\d{9}$/.test(form.phone)) {
+      err.phone = "Enter mobile number";
+    } 
+    else if (!/^[6-9]\d{9}$/.test(form.phone)) {
       err.phone = "Invalid number";
     }
 
-    if (!selectedProperty) err.propertyType = "Select type";
+    // ✅ Now always reliable
+    if (!form.propertyType.trim()) {
+      err.propertyType = "Select property type";
+    }
 
     setErrors(err);
 
     return Object.keys(err).length === 0;
   };
 
-  /* ===== SUBMIT ===== */
+  /* ================= SUBMIT ================= */
+
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -113,42 +154,62 @@ const OfferBanner = () => {
     const toastId = toast.loading("Submitting...");
 
     try {
+
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/offer-enquiry`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...form,
-            propertyType: selectedProperty,
-          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form), // ✅ direct
         }
       );
 
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.message || "Server error");
+      }
 
       toast.success("🎉 We will contact you shortly!", {
         id: toastId,
+        duration: 2500,
       });
 
-      setForm({ location: "", name: "", phone: "" });
-      setSelectedProperty("");
+      /* Reset */
+      setForm({
+        location: "",
+        name: "",
+        phone: "",
+        propertyType: "",
+      });
 
       setTimeout(() => {
         setOpen(false);
         setShowFormMobile(false);
-      }, 1300);
+      }, 1200);
 
-    } catch {
-      toast.error("Server error. Try again.", {
-        id: toastId,
-      });
+    } catch (err) {
+
+      console.error("Submit Error:", err);
+
+      toast.error(
+        err.message || "❌ Server error. Try again.",
+        {
+          id: toastId,
+          duration: 2500,
+        }
+      );
+
     } finally {
       setLoading(false);
     }
   };
 
   if (!open) return null;
+
+  /* ================= UI ================= */
 
   return (
     <AnimatePresence>
@@ -159,33 +220,9 @@ const OfferBanner = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4"
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-3 sm:px-4"
         >
 
-          {/* CENTER TOAST */}
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              style: {
-                background: "#111827",
-                color: "#fff",
-                padding: "14px 22px",
-                borderRadius: "10px",
-                fontSize: "14px",
-                textAlign: "center",
-                boxShadow: "0 10px 25px rgba(0,0,0,0.25)",
-              },
-            }}
-            containerStyle={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 9999,
-            }}
-          />
-
-          {/* CARD */}
           <motion.div
             initial={{ scale: 0.9, y: 50 }}
             animate={{ scale: 1, y: 0 }}
@@ -197,34 +234,24 @@ const OfferBanner = () => {
             {/* CLOSE */}
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-3 right-3 z-20 bg-white rounded-full p-1 shadow cursor-pointer"
+              className="absolute top-3 right-3 z-20 bg-white rounded-full p-1 shadow"
             >
               <FiX size={20} />
             </button>
 
             <div className="grid grid-cols-1 md:grid-cols-2">
 
-              {/* IMAGE (FULL RESPONSIVE FIXED) */}
+              {/* IMAGE */}
               <div
                 className={`cursor-pointer flex items-center justify-center bg-black
                 ${showFormMobile ? "hidden md:flex" : "flex"}`}
                 onClick={() => setShowFormMobile(true)}
               >
-
                 <img
                   src={OfferImg}
                   alt="Offer"
-                  className="
-                    w-full
-                    h-auto
-                    max-h-[80vh]
-                    md:h-full
-                    md:max-h-full
-                    object-contain
-                    transition
-                  "
+                  className="w-full h-auto max-h-[80vh] md:h-full object-contain"
                 />
-
               </div>
 
               {/* FORM */}
@@ -251,28 +278,28 @@ const OfferBanner = () => {
                   Get expert guidance for your home
                 </p>
 
-                <form onSubmit={handleSubmit}>
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4"
+                >
 
                   {/* PROPERTY TYPE */}
-                  <div className="mb-4">
+                  <div>
 
                     <p className="text-sm font-semibold mb-2">
                       Property Type *
                     </p>
 
-                    <div className="flex gap-1 flex-nowrap">
+                    <div className="flex flex-wrap gap-2">
 
                       {["1 BHK", "2 BHK", "3 BHK", "4+ BHK/Duplex"].map((type) => (
                         <button
                           type="button"
                           key={type}
-                          onClick={() => {
-                            setSelectedProperty(type);
-                            setErrors({});
-                          }}
-                          className={`px-2 py-1.5 rounded-full text-xs border transition whitespace-nowrap cursor-pointer
+                          onClick={() => handlePropertySelect(type)}
+                          className={`px-3 py-1.5 rounded-full text-xs border transition
                           ${
-                            selectedProperty === type
+                            form.propertyType === type
                               ? "bg-[#d4af37] border-[#d4af37]"
                               : "border-gray-300 hover:bg-[#fff3c4]"
                           }`}
@@ -288,53 +315,51 @@ const OfferBanner = () => {
                         {errors.propertyType}
                       </p>
                     )}
+
                   </div>
 
                   {/* INPUTS */}
-                  <div className="space-y-4">
+                  <OutlinedInput
+                    label="Location"
+                    name="location"
+                    placeholder="Enter property location"
+                    value={form.location}
+                    onChange={handleChange}
+                    error={errors.location}
+                  />
 
-                    <OutlinedInput
-                      label="Location"
-                      name="location"
-                      placeholder="Enter property location"
-                      value={form.location}
-                      onChange={handleChange}
-                      error={errors.location}
-                    />
+                  <OutlinedInput
+                    label="Name"
+                    name="name"
+                    placeholder="Your full name"
+                    value={form.name}
+                    onChange={handleChange}
+                    error={errors.name}
+                  />
 
-                    <OutlinedInput
-                      label="Name"
-                      name="name"
-                      placeholder="Your full name"
-                      value={form.name}
-                      onChange={handleChange}
-                      error={errors.name}
-                    />
-
-                    <OutlinedInput
-                      label="Phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="10 digit mobile number"
-                      value={form.phone}
-                      onChange={handleChange}
-                      error={errors.phone}
-                    />
-
-                  </div>
+                  <OutlinedInput
+                    label="Phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="10 digit mobile number"
+                    value={form.phone}
+                    onChange={handleChange}
+                    error={errors.phone}
+                  />
 
                   {/* SUBMIT */}
                   <button
                     disabled={loading}
                     type="submit"
-                    className="mt-5 w-full bg-[#9e1b1b] hover:bg-[#7f1414]
+                    className="w-full bg-[#9e1b1b] hover:bg-[#7f1414]
                     text-white py-2.5 rounded-md font-semibold transition
-                    disabled:opacity-70 cursor-pointer"
+                    disabled:opacity-70"
                   >
                     {loading ? "Submitting..." : "Submit"}
                   </button>
 
                 </form>
+
               </div>
 
             </div>

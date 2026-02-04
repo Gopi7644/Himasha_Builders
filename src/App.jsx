@@ -9,7 +9,6 @@ import Services from "./components/Services.jsx";
 import Kitchens from "./components/Kitchen/Kitchens.jsx";
 import Wardrobes from "./components/Wardrobes/Wardrobes.jsx";
 import Doors from "./components/DoorWindows/Doors.jsx";
-import Furnishings from "./Page/Furnishings.jsx";
 import Bathware from "./components/bathware/Bathware.jsx";
 import Lights from "./components/Lights/Lights.jsx";
 import Ideas from "./components/DesignIdeas/Ideas.jsx";
@@ -62,10 +61,6 @@ const Router = createBrowserRouter([
       {
         path: "doors",          // "/doors"
         element: <Doors />,
-      },
-      {
-        path: "furnishings",          // "/furnishings"
-        element: <Furnishings />,
       },
       {
         path: "bathware",          // "/bathware"
@@ -160,7 +155,6 @@ const Router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={Router} />;
+  return <RouterProvider router={Router} />
 }
-
 export default App;

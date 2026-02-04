@@ -14,6 +14,7 @@ import HomePopularDesigns from "../components/Home/HomePopularDesign";
 import WhyChooseUs from "../components/Home/WhyChooseUs";
 import HomeGuides from "../components/Home/HomeGuides";
 
+
 const Home = () => {
   return (
     <div id="home">
@@ -44,7 +45,7 @@ const Home = () => {
       <section id="why">
         <WhyChooseUs />
       </section>
-      
+
       {/* GUIDES */}
       <section id="guides">
         <HomeGuides />

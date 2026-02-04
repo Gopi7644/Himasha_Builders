@@ -5,7 +5,7 @@ import {
   FaMapMarkerAlt,
   FaCheckCircle,
 } from "react-icons/fa";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const Enquiry = () => {
   const [form, setForm] = useState({
@@ -66,6 +66,7 @@ const Enquiry = () => {
     setLoading(true);
 
     const toastId = toast.loading("Submitting...");
+    const toastDurationMs = 2200;
 
     try {
       const res = await fetch(
@@ -84,6 +85,7 @@ const Enquiry = () => {
       if (data.success) {
         toast.success("🎉 Submitted Successfully!", {
           id: toastId,
+          duration: toastDurationMs,
         });
 
         setShowSuccess(true);
@@ -104,6 +106,7 @@ const Enquiry = () => {
     } catch {
       toast.error("⚠️ Server error. Try again.", {
         id: toastId,
+        duration: toastDurationMs,
       });
     } finally {
       setLoading(false);
@@ -113,24 +116,7 @@ const Enquiry = () => {
   return (
     <section className="min-h-screen py-20 px-6 bg-linear-to-b from-[#06080f] to-[#0b0f1a] text-white relative">
 
-      {/* CENTER TOAST */}
-      <Toaster
-        position="top-center"
-        containerStyle={{
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-        toastOptions={{
-          style: {
-            background: "#111827",
-            color: "#fff",
-            padding: "14px 20px",
-            borderRadius: "10px",
-            textAlign: "center",
-          },
-        }}
-      />
+      {/* toasts handled by app-level Toaster in Layout.jsx */}
 
       {/* HEADER */}
       <div className="max-w-6xl mx-auto text-center">
@@ -284,11 +270,10 @@ const Enquiry = () => {
             disabled={loading}
             type="submit"
             className={`w-full py-3 rounded-lg font-semibold transition
-            ${
-              loading
+            ${loading
                 ? "bg-gray-600"
                 : "bg-linear-to-r from-[#d4af37] to-[#b8962e] text-black hover:scale-[1.02]"
-            }`}
+              }`}
           >
             {loading ? "Submitting..." : "Submit Enquiry"}
           </button>
