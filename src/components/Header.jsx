@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/logo-hb.jpeg";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
-import { MENU } from "./menuData.js";
+import { MENU } from "../data/menuData.js";
 import MenuItem from "./MenuItem";
 
 const Header = () => {
