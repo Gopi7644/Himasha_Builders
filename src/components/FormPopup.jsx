@@ -142,23 +142,38 @@ const FormPopup = ({ isOpen, onClose }) => {
       console.log("📤 Sending payload:", payload);
       console.log("🌐 API URL:", import.meta.env.VITE_API_URL);
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/offer-enquiry`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const GOOGLE_SHEET_API =
+        "https://script.google.com/macros/s/AKfycbyv272vnQuaknjlyT5X-3mT5sypRSzWqEo911IAuYLq8FMdz6pIj2koq0VTo7AmTYgP7Q/exec";
+
+      console.log(GOOGLE_SHEET_API)
+
+      const formData = new FormData();
+
+      formData.append("location", form.location);
+      formData.append("name", form.name);
+      formData.append("phone", form.phone);
+      formData.append("propertyType", selectedProperty);
+
+      const res = await fetch(GOOGLE_SHEET_API, {
+        method: "POST",
+        body: formData, // 👈 No headers
+      });
+
 
       console.log("📨 Response status:", res.status);
       console.log("✔️ Response ok:", res.ok);
-      
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
+        const text = await res.text();
+        console.log("Raw Response:", text);
+
+        let errorData;
+        try {
+          errorData = JSON.parse(text);
+        } catch {
+          throw new Error("Invalid JSON from server");
+        }
+
         console.error("❌ Server error response:", errorData);
         throw new Error(`Server error: ${res.status}`);
       }
