@@ -18,31 +18,36 @@ const Enquiry = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
 
   /* ================= VALIDATION ================= */
   const validate = () => {
     const newErrors = {};
 
-    if (form.name.trim().length < 2)
+    if (!form.name || form.name.trim().length < 2) {
       newErrors.name = "Enter valid name";
+    }
 
-    if (!/^\S+@\S+\.\S+$/.test(form.email))
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       newErrors.email = "Enter valid email";
+    }
 
-    if (!/^[6-9]\d{9}$/.test(form.phone))
-      newErrors.phone = "Enter valid mobile";
+    if (!/^[6-9]\d{9}$/.test(form.phone)) {
+      newErrors.phone = "Enter 10 digit mobile number";
+    }
 
-    if (!form.service)
+    if (!form.service) {
       newErrors.service = "Select service";
+    }
 
-    if (form.message.trim().length < 5)
-      newErrors.message = "Enter minimum 5 characters";
+    if (!form.message || form.message.trim().length < 5) {
+      newErrors.message = "Minimum 5 characters required";
+    }
 
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
   };
+
 
   /* ================= CHANGE ================= */
   const handleChange = (e) => {
@@ -56,73 +61,67 @@ const Enquiry = () => {
 
   /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validate()) {
-    toast.error("❌ Please fix form errors");
-    return;
-  }
-
-  setLoading(true);
-
-  const toastId = toast.loading("Submitting...");
-
-  try {
-
-    // ✅ Create FormData
-    const formData = new FormData();
-
-    Object.entries(form).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
-    // ✅ Identify this form
-    formData.append("source", "Enquiry Page");
-
-    const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbyv272vnQuaknjlyT5X-3mT5sypRSzWqEo911IAuYLq8FMdz6pIj2koq0VTo7AmTYgP7Q/exec",
-      {
-        method: "POST",
-        body: formData, // ❗ No headers
-      }
-    );
-
-    const text = await res.text();
-
-    if (text !== "success") {
-      throw new Error(text);
+    if (!validate()) {
+      toast.error("❌ Please fix form errors");
+      return;
     }
+    setLoading(true);
+    const toastId = toast.loading("Submitting...");
 
-    toast.success("🎉 Submitted Successfully!", {
-      id: toastId,
-      duration: 2200,
-    });
+    try {
 
-    setShowSuccess(true);
+      // ✅ Create FormData
+      const formData = new FormData();
 
-    setForm({
-      name: "",
-      email: "",
-      phone: "",
-      service: "",
-      message: "",
-    });
+      Object.entries(form).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
 
-    setTimeout(() => setShowSuccess(false), 2500);
+      // ✅ Identify this form
+      formData.append("source", "Enquiry Page");
 
-  } catch (err) {
+      const res = await fetch(
+        "https://script.google.com/macros/s/AKfycbyv272vnQuaknjlyT5X-3mT5sypRSzWqEo911IAuYLq8FMdz6pIj2koq0VTo7AmTYgP7Q/exec",
+        {
+          method: "POST",
+          body: formData, // ❗ No headers
+        }
+      );
 
-    console.error(err);
+      const text = await res.text();
 
-    toast.error("⚠️ Submit failed. Try again.", {
-      id: toastId,
-      duration: 2200,
-    });
+      if (text !== "success") {
+        throw new Error(text);
+      }
 
-  } finally {
-    setLoading(false);
-  }
-};
+      toast.success("🎉 Submitted Successfully!", {
+        id: toastId,
+        duration: 2200,
+      });
+
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: "",
+      });
+
+    } catch (err) {
+
+      console.error(err);
+
+      toast.error("⚠️ Submit failed. Try again.", {
+        id: toastId,
+        duration: 2200,
+      });
+
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   return (
@@ -188,8 +187,10 @@ const Enquiry = () => {
         {/* RIGHT FORM */}
         <form
           onSubmit={handleSubmit}
-          className="p-10 rounded-3xl bg-white/5 backdrop-blur border border-[#d4af37]/30 shadow-2xl space-y-5"
+          className={`p-10 rounded-3xl bg-white/5 backdrop-blur border border-[#d4af37]/30 shadow-2xl space-y-5
+  ${loading ? "pointer-events-none opacity-80" : ""}`}
         >
+
 
           <h2 className="text-xl font-semibold">
             Send Your Requirements
@@ -233,7 +234,17 @@ const Enquiry = () => {
               name="phone"
               placeholder="Phone Number"
               value={form.phone}
-              onChange={handleChange}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, ""); // only numbers
+
+                if (val.length <= 10) {
+                  setForm({ ...form, phone: val });
+                }
+
+                setErrors((prev) => ({ ...prev, phone: "" }));
+              }}
+              maxLength={10}
+              inputMode="numeric"
               className="input"
             />
             {errors.phone && (
@@ -281,40 +292,26 @@ const Enquiry = () => {
           <button
             disabled={loading}
             type="submit"
-            className={`w-full py-3 rounded-lg font-semibold transition
-            ${loading
-                ? "bg-gray-600"
+            className={`w-full py-3 rounded-lg font-semibold transition-all duration-200
+  flex items-center justify-center gap-2
+  ${loading
+                ? "bg-gray-600 cursor-not-allowed"
                 : "bg-linear-to-r from-[#d4af37] to-[#b8962e] text-black hover:scale-[1.02]"
               }`}
           >
-            {loading ? "Submitting..." : "Submit Enquiry"}
+            {loading ? (
+              <>
+                <span className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
+                Sending...
+              </>
+            ) : (
+              "Submit Enquiry"
+            )}
           </button>
+
 
         </form>
       </div>
-
-      {/* SUCCESS MODAL */}
-      {showSuccess && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-
-          <div className="bg-white/10 backdrop-blur p-10 rounded-2xl border border-[#d4af37]/40 text-center shadow-2xl">
-
-            <FaCheckCircle
-              size={64}
-              className="text-[#d4af37] mx-auto mb-4"
-            />
-
-            <h2 className="text-xl font-semibold">
-              Thank You!
-            </h2>
-
-            <p className="mt-2 text-gray-300">
-              We will contact you shortly.
-            </p>
-
-          </div>
-        </div>
-      )}
 
       {/* REUSABLE STYLES */}
       <style>{`

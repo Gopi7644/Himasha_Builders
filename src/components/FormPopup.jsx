@@ -12,37 +12,35 @@ const OutlinedInput = ({
   value,
   onChange,
   error,
-}) => {
-  return (
-    <div className="relative w-full">
+}) => (
+  <div className="relative w-full">
 
-      <span
-        className={`absolute -top-2.5 left-3 bg-white px-2 text-xs z-10
-        ${error ? "text-red-500" : "text-gray-600"}`}
-      >
-        {label}
-      </span>
+    <span
+      className={`absolute -top-2.5 left-3 bg-white px-2 text-xs z-10
+      ${error ? "text-red-500" : "text-gray-600"}`}
+    >
+      {label}
+    </span>
 
-      <input
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className={`w-full rounded-lg px-4 py-3 text-sm border outline-none
-        ${error
-            ? "border-red-500"
-            : "border-gray-300 focus:border-[#d4af37]"
-          }`}
-      />
+    <input
+      type={type}
+      name={name}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      className={`w-full rounded-lg px-4 py-3 text-sm border outline-none
+      ${
+        error
+          ? "border-red-500"
+          : "border-gray-300 focus:border-[#d4af37]"
+      }`}
+    />
 
-      {error && (
-        <p className="text-red-500 text-xs mt-1">{error}</p>
-      )}
-
-    </div>
-  );
-};
+    {error && (
+      <p className="text-red-500 text-xs mt-1">{error}</p>
+    )}
+  </div>
+);
 
 /* ================= MAIN ================= */
 
@@ -50,16 +48,16 @@ const FormPopup = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const [selectedProperty, setSelectedProperty] = useState("");
-
   const [form, setForm] = useState({
     location: "",
     name: "",
     phone: "",
   });
 
+  const [propertyType, setPropertyType] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
 
   /* ================= CHANGE ================= */
 
@@ -67,49 +65,48 @@ const FormPopup = ({ isOpen, onClose }) => {
 
     const { name, value } = e.target;
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    // Phone → Only Numbers (10 digit max)
+    if (name === "phone") {
 
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
+      const num = value.replace(/\D/g, "");
+
+      if (num.length > 10) return;
+
+      setForm({ ...form, phone: num });
+
+      setErrors({ ...errors, phone: "" });
+
+      return;
+    }
+
+    setForm({ ...form, [name]: value });
+
+    setErrors({ ...errors, [name]: "" });
   };
+
 
   /* ================= VALIDATION ================= */
 
-  const validateForm = () => {
+  const validate = () => {
 
     const err = {};
 
-    if (!form.location.trim()) {
-      err.location = "Enter location";
-    }
+    if (!form.location.trim()) err.location = "Enter location";
 
-    if (!form.name.trim()) {
-      err.name = "Enter name";
-    }
-    else if (!/^[a-zA-Z .]{2,40}$/.test(form.name)) {
-      err.name = "Invalid name";
-    }
+    if (!/^[a-zA-Z .]{2,40}$/.test(form.name))
+      err.name = "Enter valid name";
 
-    if (!form.phone.trim()) {
-      err.phone = "Enter mobile number";
-    }
-    else if (!/^[6-9]\d{9}$/.test(form.phone)) {
-      err.phone = "Invalid number";
-    }
+    if (!/^[6-9]\d{9}$/.test(form.phone))
+      err.phone = "Enter valid number";
 
-    if (!selectedProperty?.trim()) {
+    if (!propertyType)
       err.propertyType = "Select property type";
-    }
 
     setErrors(err);
 
     return Object.keys(err).length === 0;
   };
+
 
   /* ================= SUBMIT ================= */
 
@@ -117,16 +114,12 @@ const FormPopup = ({ isOpen, onClose }) => {
 
     e.preventDefault();
 
-    console.log("🔍 handleSubmit triggered");
-    console.log("📋 Form data:", form);
-    console.log("🏠 Selected property:", selectedProperty);
+    if (loading) return;
 
-    if (!validateForm()) {
-      console.log("❌ Form validation failed");
+    if (!validate()) {
+      toast.error("❌ Please fix form errors");
       return;
     }
-
-    console.log("✅ Form validation passed");
 
     setLoading(true);
 
@@ -134,126 +127,65 @@ const FormPopup = ({ isOpen, onClose }) => {
 
     try {
 
-      const payload = {
-        ...form,
-        propertyType: selectedProperty,
-      };
-
-      const GOOGLE_SHEET_API =
-        "https://script.google.com/macros/s/AKfycbyv272vnQuaknjlyT5X-3mT5sypRSzWqEo911IAuYLq8FMdz6pIj2koq0VTo7AmTYgP7Q/exec";
-
       const formData = new FormData();
 
       formData.append("location", form.location);
       formData.append("name", form.name);
       formData.append("phone", form.phone);
-      formData.append("propertyType", selectedProperty);
-      formData.append("source", "Form Popup"); // 👈 ADD THIS
+      formData.append("propertyType", propertyType);
+      formData.append("source", "Form Popup");
 
-      const res = await fetch(GOOGLE_SHEET_API, {
-        method: "POST",
-        body: formData, // 👈 No headers
-      });
-
-
-      console.log("📨 Response status:", res.status);
-      console.log("✔️ Response ok:", res.ok);
-
-      if (!res.ok) {
-        const text = await res.text();
-        console.log("Raw Response:", text);
-
-        let errorData;
-        try {
-          errorData = JSON.parse(text);
-        } catch {
-          throw new Error("Invalid JSON from server");
+      const res = await fetch(
+        "https://script.google.com/macros/s/AKfycbyv272vnQuaknjlyT5X-3mT5sypRSzWqEo911IAuYLq8FMdz6pIj2koq0VTo7AmTYgP7Q/exec",
+        {
+          method: "POST",
+          body: formData,
         }
+      );
 
-        console.error("❌ Server error response:", errorData);
-        throw new Error(`Server error: ${res.status}`);
+      const text = await res.text();
+
+      if (text !== "success") {
+        throw new Error(text);
       }
 
-      console.log("🎉 Request successful");
-
-      toast.success("🎉 Our team will contact you shortly!", {
+      toast.success("🎉 We will contact you shortly!", {
         id: toastId,
-        duration: 2500,
+        duration: 2200,
       });
 
+      // Reset
       setForm({
         location: "",
         name: "",
         phone: "",
       });
 
-      setSelectedProperty("");
+      setPropertyType("");
 
-      setTimeout(() => {
-        onClose();
-      }, 1000);
+      setTimeout(onClose, 800);
 
-    } catch (error) {
+    } catch (err) {
 
-      console.error("💥 Catch error:", error);
-      console.error("📍 Error message:", error.message);
-      console.error("🔗 Error type:", error.name);
+      console.error(err);
 
-      // Handle CORS errors
-      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-        console.error("🚫 CORS Error detected - Check API URL and server headers");
-        console.error("💡 CORS Exception Info:");
-        console.error("   • Check if API URL is correct");
-        console.error("   • Server must respond with CORS headers");
-        console.error("   • Ensure backend has 'Access-Control-Allow-Origin' header");
-
-        toast.error("❌ CORS Error: Cannot connect to server. Check network settings.", {
-          id: toastId,
-          duration: 3000,
-        });
-      }
-      // Handle network errors
-      else if (error instanceof TypeError) {
-        console.error("🌐 Network error detected");
-        toast.error("❌ Network error. Please check your internet connection.", {
-          id: toastId,
-          duration: 2500,
-        });
-      }
-      // Handle server errors
-      else {
-        console.error("⚠️ Server error detected");
-        toast.error("❌ Server error. Try again.", {
-          id: toastId,
-          duration: 2500,
-        });
-      }
+      toast.error("❌ Submit failed. Try again.", {
+        id: toastId,
+        duration: 2200,
+      });
 
     } finally {
       setLoading(false);
-      console.log("🏁 handleSubmit completed");
     }
   };
+
 
   /* ================= UI ================= */
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-3 sm:px-4">
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-3">
 
-      <div className="relative w-full max-w-md sm:max-w-lg bg-white rounded-xl shadow-xl p-5 sm:p-7">
-
-        {/* Loading */}
-        {loading && (
-          <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center z-20 rounded-xl">
-
-            <div className="w-8 h-8 border-4 border-gray-300 border-t-[#9e1b1b] rounded-full animate-spin" />
-
-            <p className="mt-3 text-sm font-medium text-gray-700">
-              Submitting...
-            </p>
-
-          </div>
-        )}
+      <div className="relative w-full max-w-md bg-white rounded-xl shadow-xl p-6">
 
         {/* Close */}
         <button
@@ -263,19 +195,25 @@ const FormPopup = ({ isOpen, onClose }) => {
           <FiX size={22} />
         </button>
 
-        {/* Header */}
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-          Get Free Design Consultation
+
+        <h2 className="text-lg font-bold text-gray-900">
+          Free Design Consultation
         </h2>
 
-        <p className="text-gray-600 text-sm mb-5">
-          Talk to our interior experts today
+        <p className="text-gray-600 text-sm mb-4">
+          Talk to our interior experts
         </p>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
 
-          {/* Property Type */}
+        <form
+          onSubmit={handleSubmit}
+          className={`
+            space-y-4
+            ${loading ? "pointer-events-none opacity-80" : ""}
+          `}
+        >
+
+          {/* Property */}
           <div>
 
             <p className="text-sm font-semibold mb-2">
@@ -284,29 +222,24 @@ const FormPopup = ({ isOpen, onClose }) => {
 
             <div className="flex flex-wrap gap-2">
 
-              {["1 BHK", "2 BHK", "3 BHK", "4+ BHK/Duplex"].map((type) => (
+              {["1 BHK", "2 BHK", "3 BHK", "4+ BHK/Duplex"].map((t) => (
                 <button
                   type="button"
-                  key={type}
+                  key={t}
                   onClick={() => {
-                    setSelectedProperty(type);
-
-                    // ✅ Only clear property error
-                    setErrors((prev) => ({
-                      ...prev,
-                      propertyType: "",
-                    }));
+                    setPropertyType(t);
+                    setErrors({ ...errors, propertyType: "" });
                   }}
-                  className={`px-3 py-1.5 rounded-full text-xs border transition
-                  ${selectedProperty === type
+                  className={`px-3 py-1.5 rounded-full text-xs border
+                  ${
+                    propertyType === t
                       ? "bg-[#d4af37] border-[#d4af37]"
                       : "border-gray-300 hover:bg-[#fff3c4]"
-                    }`}
+                  }`}
                 >
-                  {type}
+                  {t}
                 </button>
               ))}
-
             </div>
 
             {errors.propertyType && (
@@ -314,10 +247,9 @@ const FormPopup = ({ isOpen, onClose }) => {
                 {errors.propertyType}
               </p>
             )}
-
           </div>
 
-          {/* Inputs */}
+
           <OutlinedInput
             label="Location"
             name="location"
@@ -346,7 +278,7 @@ const FormPopup = ({ isOpen, onClose }) => {
             error={errors.phone}
           />
 
-          {/* Submit */}
+
           <button
             disabled={loading}
             type="submit"
