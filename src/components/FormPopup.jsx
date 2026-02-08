@@ -139,13 +139,8 @@ const FormPopup = ({ isOpen, onClose }) => {
         propertyType: selectedProperty,
       };
 
-      console.log("📤 Sending payload:", payload);
-      console.log("🌐 API URL:", import.meta.env.VITE_API_URL);
-
       const GOOGLE_SHEET_API =
         "https://script.google.com/macros/s/AKfycbyv272vnQuaknjlyT5X-3mT5sypRSzWqEo911IAuYLq8FMdz6pIj2koq0VTo7AmTYgP7Q/exec";
-
-      console.log(GOOGLE_SHEET_API)
 
       const formData = new FormData();
 
@@ -153,6 +148,7 @@ const FormPopup = ({ isOpen, onClose }) => {
       formData.append("name", form.name);
       formData.append("phone", form.phone);
       formData.append("propertyType", selectedProperty);
+      formData.append("source", "Form Popup"); // 👈 ADD THIS
 
       const res = await fetch(GOOGLE_SHEET_API, {
         method: "POST",

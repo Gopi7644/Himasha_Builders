@@ -33,11 +33,10 @@ const OutlinedInput = ({
         value={value}
         onChange={onChange}
         className={`w-full rounded-lg px-4 py-3 text-sm border outline-none
-        ${
-          error
+        ${error
             ? "border-red-500"
             : "border-gray-300 focus:border-[#d4af37]"
-        }`}
+          }`}
       />
 
       {error && (
@@ -119,14 +118,14 @@ const OfferBanner = () => {
 
     if (!form.name.trim()) {
       err.name = "Enter name";
-    } 
+    }
     else if (!/^[a-zA-Z .]{2,40}$/.test(form.name)) {
       err.name = "Invalid name";
     }
 
     if (!form.phone.trim()) {
       err.phone = "Enter mobile number";
-    } 
+    }
     else if (!/^[6-9]\d{9}$/.test(form.phone)) {
       err.phone = "Invalid number";
     }
@@ -155,21 +154,28 @@ const OfferBanner = () => {
 
     try {
 
+      // ✅ Create FormData (CORS Safe)
+      const formData = new FormData();
+
+      Object.entries(form).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      formData.append("source", "Offer Banner"); // 👈 ADD THIS
+
+
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/offer-enquiry`,
+        "https://script.google.com/macros/s/AKfycbyv272vnQuaknjlyT5X-3mT5sypRSzWqEo911IAuYLq8FMdz6pIj2koq0VTo7AmTYgP7Q/exec",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(form), // ✅ direct
+          body: formData, // ❗ No headers
         }
       );
 
-      const data = await res.json();
+      const text = await res.text();
 
-      if (!res.ok) {
-        throw new Error(data?.message || "Server error");
+      if (text !== "success") {
+        throw new Error(text);
       }
 
       toast.success("🎉 We will contact you shortly!", {
@@ -177,7 +183,7 @@ const OfferBanner = () => {
         duration: 2500,
       });
 
-      /* Reset */
+      // Reset
       setForm({
         location: "",
         name: "",
@@ -194,20 +200,16 @@ const OfferBanner = () => {
 
       console.error("Submit Error:", err);
 
-      toast.error(
-        err.message || "❌ Server error. Try again.",
-        {
-          id: toastId,
-          duration: 2500,
-        }
-      );
+      toast.error("❌ Submit failed. Try again.", {
+        id: toastId,
+        duration: 2500,
+      });
 
     } finally {
       setLoading(false);
     }
   };
 
-  if (!open) return null;
 
   /* ================= UI ================= */
 
@@ -298,11 +300,10 @@ const OfferBanner = () => {
                           key={type}
                           onClick={() => handlePropertySelect(type)}
                           className={`px-3 py-1.5 rounded-full text-xs border transition
-                          ${
-                            form.propertyType === type
+                          ${form.propertyType === type
                               ? "bg-[#d4af37] border-[#d4af37]"
                               : "border-gray-300 hover:bg-[#fff3c4]"
-                          }`}
+                            }`}
                         >
                           {type}
                         </button>

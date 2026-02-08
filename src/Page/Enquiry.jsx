@@ -56,62 +56,74 @@ const Enquiry = () => {
 
   /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!validate()) {
-      toast.error("❌ Please fix form errors");
-      return;
-    }
+  if (!validate()) {
+    toast.error("❌ Please fix form errors");
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    const toastId = toast.loading("Submitting...");
-    const toastDurationMs = 2200;
+  const toastId = toast.loading("Submitting...");
 
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/enquiry`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
-        }
-      );
+  try {
 
-      if (!res.ok) throw new Error();
+    // ✅ Create FormData
+    const formData = new FormData();
 
-      const data = await res.json();
+    Object.entries(form).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
-      if (data.success) {
-        toast.success("🎉 Submitted Successfully!", {
-          id: toastId,
-          duration: toastDurationMs,
-        });
+    // ✅ Identify this form
+    formData.append("source", "Enquiry Page");
 
-        setShowSuccess(true);
-
-        setForm({
-          name: "",
-          email: "",
-          phone: "",
-          service: "",
-          message: "",
-        });
-
-        setTimeout(() => setShowSuccess(false), 2500);
-      } else {
-        throw new Error();
+    const res = await fetch(
+      "https://script.google.com/macros/s/AKfycbyv272vnQuaknjlyT5X-3mT5sypRSzWqEo911IAuYLq8FMdz6pIj2koq0VTo7AmTYgP7Q/exec",
+      {
+        method: "POST",
+        body: formData, // ❗ No headers
       }
+    );
 
-    } catch {
-      toast.error("⚠️ Server error. Try again.", {
-        id: toastId,
-        duration: toastDurationMs,
-      });
-    } finally {
-      setLoading(false);
+    const text = await res.text();
+
+    if (text !== "success") {
+      throw new Error(text);
     }
-  };
+
+    toast.success("🎉 Submitted Successfully!", {
+      id: toastId,
+      duration: 2200,
+    });
+
+    setShowSuccess(true);
+
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      service: "",
+      message: "",
+    });
+
+    setTimeout(() => setShowSuccess(false), 2500);
+
+  } catch (err) {
+
+    console.error(err);
+
+    toast.error("⚠️ Submit failed. Try again.", {
+      id: toastId,
+      duration: 2200,
+    });
+
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <section className="min-h-screen py-20 px-6 bg-linear-to-b from-[#06080f] to-[#0b0f1a] text-white relative">
